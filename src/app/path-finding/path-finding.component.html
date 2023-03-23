@@ -1,0 +1,32 @@
+<!-- <label for="algo">选择算法:</label>
+<select id="algo" name="algo">
+  <option *ngFor="let a of algorithms" [value]="a.value">{{a.name}}</option>
+</select> -->
+<div class="main">
+  <mat-form-field appearance="outline">
+    <mat-label>选择一个算法</mat-label>
+    <mat-select [(value)]="selectedPathFindingAlgorithm">
+      <mat-option *ngFor="let a of pathFindingAlgorithms" [value]="a.value">{{a.name}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>选择一个迷宫算法</mat-label>
+    <mat-select [(value)]="selectedMazeAlgorithm">
+      <mat-option *ngFor="let m of mazeAlgorithms" [value]="m.value" (onSelectionChange)="print()">{{m.name}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <button mat-stroked-button color="primary">开始可视化</button>
+
+  <!-- <mat-form-field appearance="outline">
+    <mat-label>图像的权值</mat-label>
+  </mat-form-field> -->
+
+  <mat-slider>
+    <input [(value)]="speed" matSliderThumb (valueChange)="print()">
+  </mat-slider>
+  <div class="container"></div>
+</div>
+
+
