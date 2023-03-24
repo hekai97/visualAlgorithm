@@ -6,16 +6,16 @@ import { AppComponent } from './app.component';
 import { PathFindingComponent } from './path-finding/path-finding.component';
 import { IndexComponent } from './index/index.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import {MatSelectModule} from '@angular/material/select';
-import {MatSliderModule} from '@angular/material/slider';
-import {MatButtonModule} from '@angular/material/button';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSliderModule } from '@angular/material/slider';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
+import { FormsModule } from '@angular/forms';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatDividerModule } from '@angular/material/divider';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    PathFindingComponent,
-    IndexComponent
-  ],
+  declarations: [AppComponent, PathFindingComponent, IndexComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -23,8 +23,12 @@ import {MatButtonModule} from '@angular/material/button';
     MatSelectModule,
     MatSliderModule,
     MatButtonModule,
+    MatInputModule,
+    FormsModule,
+    MatSnackBarModule,
+    MatDividerModule,
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

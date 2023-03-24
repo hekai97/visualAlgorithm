@@ -1,11 +1,9 @@
-.main{
+.main {
   margin-top: 10px;
 }
 .container {
   display: grid;
-  box-shadow:
-    3px 3px 4px #5A5C5E,
-    -3px -3px 4px #ffffff;
+  box-shadow: 3px 3px 4px #5a5c5e, -3px -3px 4px #ffffff;
   border-radius: 5px;
   padding: 12px;
   margin-top: 10px;
@@ -17,12 +15,11 @@
   grid-column-gap: 5px;
   border: none;
 }
-.before_start_node{
+
+:host::ng-deep .before_start_node {
   background: transparent;
   text-align: center;
-  box-shadow:
-    3px 3px 4px #5A5C5E,
-    -3px -3px 4px #ffffff;
+  box-shadow: 3px 3px 4px #5a5c5e, -3px -3px 4px #ffffff;
   border-radius: 5px;
   display: flex;
   justify-content: center;
@@ -30,3 +27,35 @@
   cursor: cell;
   border: none;
 }
+
+:host::ng-deep .wall {
+  background-color: #5a5c5e;
+  box-shadow: inset 5px 5px 7px #464849, inset -1px -1px 2px #cccaca;
+  color: #5a5c5e;
+  text-align: center;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: cell;
+  border: none;
+}
+
+.button-area {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+}
+/* @media only screen and (min-width: 1200px) {
+
+  .container {
+    border-radius: 5px;
+    padding: 12px;
+    margin-top: 10px;
+    grid-template-rows: repeat(20, 30px);
+    grid-template-columns: repeat(40, 30px);
+    grid-row-gap: 5px;
+    grid-column-gap: 5px;
+  }
+} */

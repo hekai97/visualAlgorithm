@@ -6,27 +6,51 @@
   <mat-form-field appearance="outline">
     <mat-label>选择一个算法</mat-label>
     <mat-select [(value)]="selectedPathFindingAlgorithm">
-      <mat-option *ngFor="let a of pathFindingAlgorithms" [value]="a.value">{{a.name}}</mat-option>
+      <mat-option *ngFor="let a of pathFindingAlgorithms" [value]="a.value">{{
+        a.name
+      }}</mat-option>
     </mat-select>
   </mat-form-field>
 
   <mat-form-field appearance="outline">
     <mat-label>选择一个迷宫算法</mat-label>
     <mat-select [(value)]="selectedMazeAlgorithm">
-      <mat-option *ngFor="let m of mazeAlgorithms" [value]="m.value" (onSelectionChange)="print()">{{m.name}}</mat-option>
+      <mat-option
+        *ngFor="let m of mazeAlgorithms"
+        [value]="m.value"
+        (onSelectionChange)="print()"
+        >{{ m.name }}</mat-option
+      >
     </mat-select>
   </mat-form-field>
-
-  <button mat-stroked-button color="primary">开始可视化</button>
 
   <!-- <mat-form-field appearance="outline">
     <mat-label>图像的权值</mat-label>
   </mat-form-field> -->
-
+  <mat-form-field class="example-full-width">
+    <mat-label>地图行数</mat-label>
+    <input matInput placeholder="20" name="row" [(ngModel)]="rows" />
+  </mat-form-field>
+  <mat-form-field class="example-full-width">
+    <mat-label>地图列数</mat-label>
+    <input matInput placeholder="40" name="col" [(ngModel)]="cols" />
+  </mat-form-field>
+  <button mat-stroked-button color="primary" (click)="createBoard()">
+    生成地图
+  </button>
   <mat-slider>
-    <input [(value)]="speed" matSliderThumb (valueChange)="print()">
+    <input [(value)]="speed" matSliderThumb (valueChange)="print()" />
   </mat-slider>
-  <div class="container"></div>
+
+  <div class="button-area">
+    <button mat-stroked-button color="primary">开始可视化</button>
+    <button mat-stroked-button color="primary" (click)="reset()">重置</button>
+  </div>
+
+  <div
+    class="container"
+    (mousedown)="onMouseDown($event)"
+    (mouseup)="onMouseUp($event)"
+    (mouseover)="setWallAttribute($event)"
+  ></div>
 </div>
-
-
