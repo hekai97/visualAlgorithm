@@ -12,6 +12,14 @@
     </mat-select>
   </mat-form-field>
 
+  <mat-form-field *ngIf="selectedPathFindingAlgorithm=='dijkstra'" appearance="outline">
+    <mat-label>是否设置权值</mat-label>
+    <mat-select [(value)]="this.isWeighted" (valueChange)="changeNodeWeight()">
+      <mat-option [value]="true">是</mat-option>
+      <mat-option [value]="false">否</mat-option>
+    </mat-select>
+  </mat-form-field>
+
   <mat-form-field appearance="outline">
     <mat-label>选择一个迷宫算法</mat-label>
     <mat-select [(value)]="selectedMazeAlgorithm">
@@ -43,7 +51,7 @@
   </mat-slider>
 
   <div class="button-area">
-    <button mat-stroked-button color="primary">开始可视化</button>
+    <button mat-stroked-button color="primary" (click)="visualStart()">开始可视化</button>
     <button mat-stroked-button color="primary" (click)="reset()">重置</button>
   </div>
 

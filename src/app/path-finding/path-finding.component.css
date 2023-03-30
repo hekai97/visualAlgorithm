@@ -47,15 +47,62 @@
   align-items: center;
   margin-top: 10px;
 }
-/* @media only screen and (min-width: 1200px) {
 
-  .container {
-    border-radius: 5px;
-    padding: 12px;
-    margin-top: 10px;
-    grid-template-rows: repeat(20, 30px);
-    grid-template-columns: repeat(40, 30px);
-    grid-row-gap: 5px;
-    grid-column-gap: 5px;
-  }
-} */
+:host::ng-deep .ends {
+  background: #26466D;
+  color: white;
+  font-weight: bolder;
+  text-align: center;
+  box-shadow:
+    3px 3px 4px #5A5C5E,
+    -3px -3px 4px #ffffff;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: cell;
+  border: none;
+}
+
+:host::ng-deep .Path_green {
+  background: #00FF00;
+  color: black;
+  text-align: center;
+  box-shadow:
+    5px 5px 9px #5A5C5E,
+    -5px -5px 9px #ffffff;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: cell;
+  border: none;
+}
+
+:host::ng-deep .Path_red {
+  background: #DC143C;
+  color: white;
+  text-align: center;
+  box-shadow:
+    3px 3px 4px #5A5C5E,
+    -3px -3px 4px #ffffff;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: cell;
+  border: none;
+}
+
+/*@media only screen and (min-width: 1200px) {*/
+
+/*  .container {*/
+/*    border-radius: 5px;*/
+/*    padding: 12px;*/
+/*    margin-top: 10px;*/
+/*    !*grid-template-rows: repeat(20, 30px);*!*/
+/*    !*grid-template-columns: repeat(40, 30px);*!*/
+/*    grid-row-gap: 5px;*/
+/*    grid-column-gap: 5px;*/
+/*  }*/
+/*}*/

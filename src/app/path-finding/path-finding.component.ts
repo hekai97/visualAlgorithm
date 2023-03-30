@@ -1,39 +1,47 @@
-import { Component, OnInit } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
-
+import {Component, OnInit} from '@angular/core';
+import {MatSnackBar} from '@angular/material/snack-bar';
+import {BaseAlgorithm} from './algorithm/base-algorithm';
+import {AStar} from "./algorithm/a-star";
+import {BreadthFirstSearch} from "./algorithm/breadth-first-search";
+import {DepthFirstSearch} from "./algorithm/depth-first-search";
+import {Dijkstra} from "./algorithm/dijkstra";
 @Component({
   templateUrl: './path-finding.component.html',
   styleUrls: ['./path-finding.component.css'],
 })
 export class PathFindingComponent implements OnInit {
-  constructor(private _snackBar: MatSnackBar) {}
+  constructor(private _snackBar: MatSnackBar) {
+  }
 
   ngOnInit(): void {
     console.log('PathFindingComponent');
     this.createBoard();
-    this.createStartNode();
-    this.createEndNode();
+    this.createStartNode(this.startRow, this.startCol);
+    this.createEndNode(this.endRow, this.endCol);
   }
+  private algorithm: BaseAlgorithm | undefined;
   // 默认地图大小
   rows = 20;
   cols = 40;
-  startRow = 1;
-  startCol = 1;
-  endRow = 20;
-  endCol = 40;
+  startRow = 10;
+  startCol = 10;
+  endRow = 10;
+  endCol = 30;
   speed = 100;
   isMouseDown = false;
+
+  isWeighted :boolean = false;
   pathFindingAlgorithms = [
-    { name: 'A*', value: 'aStar' },
-    { name: 'Dijkstra', value: 'dijkstra' },
-    { name: 'BFS', value: 'bfs' },
-    { name: 'DFS', value: 'dfs' },
+    {name: 'A*', value: 'aStar'},
+    {name: 'Dijkstra', value: 'dijkstra'},
+    {name: 'BFS', value: 'bfs'},
+    {name: 'DFS', value: 'dfs'},
   ];
   mazeAlgorithms = [
-    { name: 'None', value: 'none' },
-    { name: 'Recursive Division', value: 'recursiveDivision' },
-    { name: 'Randomized Prim', value: 'randomizedPrim' },
-    { name: 'Randomized Kruskal', value: 'randomizedKruskal' },
+    {name: 'None', value: 'none'},
+    {name: 'Recursive Division', value: 'recursiveDivision'},
+    {name: 'Randomized Prim', value: 'randomizedPrim'},
+    {name: 'Randomized Kruskal', value: 'randomizedKruskal'},
   ];
 
   selectedPathFindingAlgorithm = 'aStar';
@@ -49,24 +57,26 @@ export class PathFindingComponent implements OnInit {
     console.log(this.speed);
     console.log(this.selectedPathFindingAlgorithm);
   }
+
   createBoard(): void {
-    var width = 1200;
-    var height = 600;
+    const width = 1200;
+    const height = 600;
     const container = document.querySelector('.container');
+
 
     container!.setAttribute(
       'style',
-      `grid-template-rows: repeat(${this.rows}, ${height / this.rows}px);`
+      `grid-template-rows: repeat(${this.rows}, ${height / this.rows}px);grid-template-columns: repeat(${this.cols}, ${width / this.cols}px);`
     );
-    container!.setAttribute(
-      'style',
-      `grid-template-columns: repeat(${this.cols}, ${width / this.cols}px);`
-    );
+    // container!.setAttribute(
+    //   'style',
+    //   `grid-template-columns: repeat(${this.cols}, ${width / this.cols}px);`
+    // );
 
     container!.innerHTML = '';
     for (let i = 0; i < this.rows; i++) {
       for (let j = 0; j < this.cols; j++) {
-        let temp = this.createNode(i+1, j+1);
+        let temp = this.createNode(i, j);
         container!.appendChild(temp);
       }
     }
@@ -81,8 +91,9 @@ export class PathFindingComponent implements OnInit {
     // container!.addEventListener('mouseover', this.setWallAttribute);
     // container!.addEventListener('mouseup', this.setWallAttribute);
   }
+
   createNode(row: number, col: number): HTMLElement {
-    console.log(row, col);
+    // console.log(row, col);
 
     let temp = document.createElement('div');
     temp.classList.add('before_start_node');
@@ -91,27 +102,27 @@ export class PathFindingComponent implements OnInit {
     temp.setAttribute('wall', 'false');
     temp.setAttribute('parent', 'null');
     temp.setAttribute('border', '1px solid black');
-    temp.innerHTML = ' ';
+    temp.innerHTML = '';
     return temp;
   }
 
   setWallAttribute(event: any) {
-    console.log('this.isMouseDown2 :>> ', this.isMouseDown);
+    // console.log('this.isMouseDown2 :>> ', this.isMouseDown);
     if (this.isMouseDown) {
       if (event.target.classList.contains('before_start_node')) {
         const row = event.target.getAttribute('row');
         const col = event.target.getAttribute('col');
         if (
-          (row == this.startRow && col == this.startCol) ||
-          (this.endRow == row && this.endCol == col)
+          (row == this.startRow-1 && col == this.startCol-1) ||
+          (this.endRow-1 == row && this.endCol-1 == col)
         ) {
           this._snackBar.open('不能选择起点或终点！');
         } else {
           event.target.classList.toggle('wall');
           if (event.target.classList.contains('wall')) {
-            event.target.setAttribute('wall', 1);
+            event.target.setAttribute('wall', 'true');
           } else {
-            event.target.setAttribute('wall', 0);
+            event.target.setAttribute('wall', 'false');
           }
         }
       }
@@ -122,36 +133,91 @@ export class PathFindingComponent implements OnInit {
     this.isMouseDown = true;
     this.setWallAttribute(event);
   }
+
   onMouseUp(event: any) {
     this.isMouseDown = false;
     this.setWallAttribute(event);
   }
+
   reset() {
     this.rows = 20;
     this.cols = 40;
-    this.startRow = 1;
-    this.startCol = 1;
-    this.endRow = 20;
-    this.endCol = 40;
+    this.startRow = 10;
+    this.startCol = 10;
+    this.endRow = 10;
+    this.endCol = 30;
     this.speed = 100;
+    this.isWeighted = false;
     this.selectedPathFindingAlgorithm = 'aStar';
     this.selectedMazeAlgorithm = 'none';
     this.createBoard();
+    this.createStartNode(this.startRow, this.startCol);
+    this.createEndNode(this.endRow, this.endCol);
   }
 
-  createStartNode() {
+  createStartNode(x: number, y: number) {
     const container = document.querySelector('.container');
-    const startNode = container!.querySelector(`[row="${this.startRow}"][col="${this.startCol}"]`);
-    startNode!.classList.remove('before_start_node');
-    startNode!.classList.add('start_node');
+    const startNode = container!.querySelector(`div[row="${x-1}"][col="${y-1}"]`);
+    startNode!.setAttribute('cost', String(0));
+    startNode!.setAttribute('class', 'ends');
     startNode!.innerHTML = 'S';
   }
 
-  createEndNode() {
+  createEndNode(x: number, y: number) {
     const container = document.querySelector('.container');
-    const endNode = container!.querySelector(`[row="${this.endRow}"][col="${this.endCol}"]`);
-    endNode!.classList.remove('before_start_node');
-    endNode!.classList.add('end_node');
+    const endNode = container!.querySelector(`div[row="${x-1}"][col="${y-1}"]`);
+    endNode!.setAttribute('class', 'ends');
     endNode!.innerHTML = 'E';
+  }
+
+  visualStart():void {
+    if(this.speed==0)this.speed=1;
+    if(this.selectedPathFindingAlgorithm == 'aStar'){
+      this.algorithm = new AStar(this.rows, this.cols, this.startRow-1, this.startCol-1, this.endRow-1, this.endCol-1, this.speed);
+    }
+    else if(this.selectedPathFindingAlgorithm == 'dijkstra'){
+      if(this.isWeighted){
+        this.algorithm = new Dijkstra(this.rows, this.cols, this.startRow-1, this.startCol-1, this.endRow-1, this.endCol-1, this.speed);
+      }
+      else{
+        this.algorithm = new BreadthFirstSearch(this.rows, this.cols, this.startRow-1, this.startCol-1, this.endRow-1, this.endCol-1, this.speed)
+      }
+    }else if(this.selectedPathFindingAlgorithm == 'bfs'){
+      this.algorithm = new BreadthFirstSearch(this.rows, this.cols, this.startRow-1, this.startCol-1, this.endRow-1, this.endCol-1, this.speed);
+    }
+    else if(this.selectedPathFindingAlgorithm == 'dfs'){
+      console.log('dfs');
+      this.algorithm = new DepthFirstSearch(this.rows, this.cols, this.startRow-1, this.startCol-1, this.endRow-1, this.endCol-1, this.speed);
+    }
+    this.algorithm!.start();
+  }
+  // 用于给图设置权值
+  changeNodeWeight() {
+    console.log(this.isWeighted);
+    if(this.isWeighted){
+      for(let i=0;i<this.rows;i++){
+        for(let j=0;j<this.cols;j++){
+          let widget = Math.ceil(Math.random()*10);
+          if((i==this.startRow-1&&j==this.startCol-1)||(i==this.endRow-1&&j==this.endCol-1)){
+            widget = 0;
+          }
+          let temp = document.querySelector(`div[row="${i}"][col="${j}"]`);
+          temp!.setAttribute('weight', widget.toString());
+          if((i==this.startRow-1&&j==this.startCol-1)||(i==this.endRow-1&&j==this.endCol-1)){
+
+          }else {
+            temp!.innerHTML = widget.toString();
+          }
+        }
+      }
+    }else{
+      for(let i=0;i<this.rows;i++){
+        for(let j=0;j<this.cols;j++){
+          let temp = document.querySelector(`div[row="${i}"][col="${j}"]`);
+          temp!.removeAttribute('weight');
+          temp!.innerHTML = '';
+        }
+      }
+    }
   }
 }
