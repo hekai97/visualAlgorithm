@@ -5,7 +5,7 @@
   -ms-user-select: none;
   user-select: none;
   display: flex;
-  margin: 0;
+  /*margin: 0;*/
   flex-direction: column;
   background: #e0e5ec;
   font-family: 'proxima_nova_rgregular', Helvetica, Arial, sans-serif;

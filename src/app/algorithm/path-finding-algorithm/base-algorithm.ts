@@ -211,6 +211,20 @@ export abstract class BaseAlgorithm {
     return node.getAttribute('wall') === 'true';
   }
 
+  protected setWallWithIndex(row: number, col: number,wall:boolean) {
+    this.getIndexNode(row, col)!.setAttribute('wall', wall.toString());
+    if(wall){
+      this.getIndexNode(row, col)!.classList.add('wall');
+    }else{
+      this.getIndexNode(row, col)!.classList.remove('wall');
+    }
+  }
+
+  protected setWallWithNode(node: HTMLElement,wall:boolean) {
+    let [row,col] = this.getNodeIndex(node);
+    this.setWallWithIndex(row,col,wall);
+  }
+
   /**
    * 判断指定位置是否已经被访问过
    * @param row 哪行
@@ -368,7 +382,7 @@ export abstract class BaseAlgorithm {
 
   protected isIndexInRange(row: number, col: number): boolean{
     // console.log(row, col,'此时的行列,总行列为',this.rows,this.cols);
-    return row >= 0 && row < this.rows && col >= 0 && col < this.cols;
+    return row >= 0 && row <= this.rows && col >= 0 && col <= this.cols;
   }
 }
 

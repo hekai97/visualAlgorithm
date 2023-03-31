@@ -22,11 +22,10 @@
 
   <mat-form-field appearance="outline">
     <mat-label>选择一个迷宫算法</mat-label>
-    <mat-select [(value)]="selectedMazeAlgorithm">
+    <mat-select [(value)]="selectedMazeAlgorithm" (selectionChange)="generateMaze()">
       <mat-option
         *ngFor="let m of mazeAlgorithms"
         [value]="m.value"
-        (onSelectionChange)="print()"
         >{{ m.name }}</mat-option
       >
     </mat-select>
@@ -47,7 +46,7 @@
     生成地图
   </button>
   <mat-slider>
-    <input [(value)]="speed" matSliderThumb (valueChange)="print()" />
+    <input [(value)]="speed" matSliderThumb (valueChange)="generateMaze()" />
   </mat-slider>
 
   <div class="button-area">

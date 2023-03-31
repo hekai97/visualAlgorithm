@@ -1,10 +1,12 @@
 import {Component, OnInit} from '@angular/core';
 import {MatSnackBar} from '@angular/material/snack-bar';
-import {BaseAlgorithm} from './algorithm/base-algorithm';
-import {AStar} from "./algorithm/a-star";
-import {BreadthFirstSearch} from "./algorithm/breadth-first-search";
-import {DepthFirstSearch} from "./algorithm/depth-first-search";
-import {Dijkstra} from "./algorithm/dijkstra";
+import {BaseAlgorithm} from '../algorithm/path-finding-algorithm/base-algorithm';
+import {AStar} from "../algorithm/path-finding-algorithm/a-star";
+import {BreadthFirstSearch} from "../algorithm/path-finding-algorithm/breadth-first-search";
+import {DepthFirstSearch} from "../algorithm/path-finding-algorithm/depth-first-search";
+import {Dijkstra} from "../algorithm/path-finding-algorithm/dijkstra";
+import {RandomizedDepthFirstSearch} from "../algorithm/maze-algorithm/randomized-depth-first-search";
+import {SimpleStairMaze} from "../algorithm/maze-algorithm/simple-stair-maze";
 @Component({
   templateUrl: './path-finding.component.html',
   styleUrls: ['./path-finding.component.css'],
@@ -39,6 +41,8 @@ export class PathFindingComponent implements OnInit {
   ];
   mazeAlgorithms = [
     {name: 'None', value: 'none'},
+    {name: 'Simple Stair Maze', value: 'simpleStairMaze'},
+    {name: 'Randomized depth-first search', value: 'randomizedDepthFirstSearch'},
     {name: 'Recursive Division', value: 'recursiveDivision'},
     {name: 'Randomized Prim', value: 'randomizedPrim'},
     {name: 'Randomized Kruskal', value: 'randomizedKruskal'},
@@ -47,15 +51,19 @@ export class PathFindingComponent implements OnInit {
   selectedPathFindingAlgorithm = 'aStar';
   selectedMazeAlgorithm = 'none';
 
-  print(): void {
-    console.log(this.rows);
-    console.log(this.cols);
-    console.log(this.startRow);
-    console.log(this.startCol);
-    console.log(this.endRow);
-    console.log(this.endCol);
-    console.log(this.speed);
-    console.log(this.selectedPathFindingAlgorithm);
+  generateMaze(): void {
+    switch (this.selectedMazeAlgorithm) {
+      case 'randomizedDepthFirstSearch':
+        let maze = new RandomizedDepthFirstSearch(this.rows-1, this.cols-1,this.startRow-1,this.startCol-1,this.endRow-1,this.endCol-1,this.speed);
+        maze.start();
+        break;
+      case 'simpleStairMaze':
+        let maze2 = new SimpleStairMaze(this.rows-1, this.cols-1,this.startRow-1,this.startCol-1,this.endRow-1,this.endCol-1,this.speed);
+        maze2.start();
+        break;
+      default:
+        break;
+    }
   }
 
   createBoard(): void {
