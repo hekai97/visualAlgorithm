@@ -14,7 +14,10 @@ export class DepthFirstSearch extends BaseAlgorithm{
   }
   constructor(rows:number,cols:number,startRow: number, startCol: number, endRow: number, endCol: number,speed:number) {
     super(rows,cols,startRow, startCol, endRow, endCol,speed);
-    console.log('row='+rows+'col='+cols+'startRow='+startRow+'startCol='+startCol+'endRow='+endRow+'endCol='+endCol+'speed='+speed);
+    console.log('row='+rows
+
+
+      +'col='+cols+'startRow='+startRow+'startCol='+startCol+'endRow='+endRow+'endCol='+endCol+'speed='+speed);
   }
 
   private startAlgorithm(startRow: number, startCol: number,parent:HTMLElement|null): boolean {

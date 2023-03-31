@@ -30,7 +30,7 @@ export class BreadthFirstSearch extends BaseAlgorithm{
       let index = this.getNodeIndex(current);
       this.setVisitedWithIndex(index[0],index[1],true);
       // 更改cost
-      let parent = this.findParentNodeWithNode(current);
+      let parent = this.getParentNodeWithNode(current);
       if(parent != null) {
         // current.setAttribute('cost',`${parseInt(parent.getAttribute('cost')!)+1}`);
 

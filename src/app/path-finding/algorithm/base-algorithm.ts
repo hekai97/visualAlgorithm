@@ -112,19 +112,17 @@ export abstract class BaseAlgorithm {
    * 进行抽象，将公用方法放在基类中
    * */
 
-  /**
-   * 获取指定div的父节点
-   * @param node 指定的div
-   * @protected
-   * @return HTMLElement|null 如果找到了，就返回父div，否则返回null
-   */
-  protected findParentNodeWithNode(node: HTMLElement): HTMLElement | null {
-    let parent = node.getAttribute("parent");
-    if (parent && parent!=='null') {
-      let [row, col] = parent.split("|");
-      return this.getIndexNode(parseInt(row), parseInt(col));
-    }
-    return null;
+  // protected findParentNodeWithNode(node: HTMLElement): HTMLElement | null {
+  //   let parent = node.getAttribute("parent");
+  //   if (parent && parent!=='null') {
+  //     let [row, col] = parent.split("|");
+  //     return this.getIndexNode(parseInt(row), parseInt(col));
+  //   }
+  //   return null;
+  // }
+
+  protected isParent(newRow: number, newCol: number) {
+    return this.getIndexNode(newRow, newCol)!==this.getParentNodeWithIndex(newRow, newCol);
   }
 
   /**
@@ -135,7 +133,7 @@ export abstract class BaseAlgorithm {
    * @private
    * @return void
    */
-  private changeDivColorWithIndex(x: number, y: number, color: Color) {
+  protected changeDivColorWithIndex(x: number, y: number, color: Color) {
     let node = this.getIndexNode(x, y);
     if(this.isEndPoint(x,y)||this.isStartPoint(x,y)){
       return;
@@ -286,6 +284,30 @@ export abstract class BaseAlgorithm {
 
   protected setParentWithNode(node: HTMLElement, parent: HTMLElement): void{
     node.setAttribute('parent', `${parent.getAttribute('row')}|${parent.getAttribute('col')}`);
+  }
+
+
+  protected getParentNodeWithIndex(row: number, col: number): HTMLElement | null{
+    let parent = this.getIndexNode(row, col)!.getAttribute('parent');
+    if (parent === null) {
+      return null;
+    }
+    let parentIndex = parent.split('|');
+    return this.getIndexNode(parseInt(parentIndex[0]), parseInt(parentIndex[1]));
+  }
+  /**
+   * 获取指定div的父节点
+   * @param node 指定的div
+   * @protected
+   * @return HTMLElement|null 如果找到了，就返回父div，否则返回null
+   */
+  protected getParentNodeWithNode(node: HTMLElement): HTMLElement | null{
+    let parent = node.getAttribute('parent');
+    if (parent === null) {
+      return null;
+    }
+    let parentIndex = parent.split('|');
+    return this.getIndexNode(parseInt(parentIndex[0]), parseInt(parentIndex[1]));
   }
 
   /**
