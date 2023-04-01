@@ -13,6 +13,7 @@ import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDividerModule } from '@angular/material/divider';
+import {MatBadgeModule} from '@angular/material/badge';
 
 @NgModule({
   declarations: [AppComponent, PathFindingComponent, IndexComponent],
@@ -27,6 +28,7 @@ import { MatDividerModule } from '@angular/material/divider';
     FormsModule,
     MatSnackBarModule,
     MatDividerModule,
+    MatBadgeModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

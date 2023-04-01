@@ -14,10 +14,7 @@ export class DepthFirstSearch extends BaseAlgorithm{
   }
   constructor(rows:number,cols:number,startRow: number, startCol: number, endRow: number, endCol: number,speed:number) {
     super(rows,cols,startRow, startCol, endRow, endCol,speed);
-    console.log('row='+rows
-
-
-      +'col='+cols+'startRow='+startRow+'startCol='+startCol+'endRow='+endRow+'endCol='+endCol+'speed='+speed);
+    console.log('row='+rows +'col='+cols+'startRow='+startRow+'startCol='+startCol+'endRow='+endRow+'endCol='+endCol+'speed='+speed);
   }
 
   private startAlgorithm(startRow: number, startCol: number,parent:HTMLElement|null): boolean {
@@ -38,6 +35,7 @@ export class DepthFirstSearch extends BaseAlgorithm{
     for (let i = 0; i < 4; i++) {
       let newRow = startRow + this.direction[i][0];
       let newCol = startCol + this.direction[i][1];
+      console.log('newRow='+newRow+'newCol='+newCol+'isIndexInRange='+this.isIndexInRange(newRow,newCol));
       if (this.isIndexInRange(newRow,newCol) && !this.isWallWithIndex(newRow, newCol) && !this.isVisitedWithIndex(newRow,newCol)) {
         this.setVisitedWithIndex(newRow,newCol,true);
         // this.changeColor(newRow,newCol,time);

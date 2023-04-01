@@ -7,6 +7,7 @@ import {DepthFirstSearch} from "../algorithm/path-finding-algorithm/depth-first-
 import {Dijkstra} from "../algorithm/path-finding-algorithm/dijkstra";
 import {RandomizedDepthFirstSearch} from "../algorithm/maze-algorithm/randomized-depth-first-search";
 import {SimpleStairMaze} from "../algorithm/maze-algorithm/simple-stair-maze";
+import {RecursiveDivision} from "../algorithm/maze-algorithm/recursive-division";
 @Component({
   templateUrl: './path-finding.component.html',
   styleUrls: ['./path-finding.component.css'],
@@ -54,12 +55,16 @@ export class PathFindingComponent implements OnInit {
   generateMaze(): void {
     switch (this.selectedMazeAlgorithm) {
       case 'randomizedDepthFirstSearch':
-        let maze = new RandomizedDepthFirstSearch(this.rows-1, this.cols-1,this.startRow-1,this.startCol-1,this.endRow-1,this.endCol-1,this.speed);
+        let maze = new RandomizedDepthFirstSearch(this.rows, this.cols,this.startRow-1,this.startCol-1,this.endRow-1,this.endCol-1,this.speed);
         maze.start();
         break;
       case 'simpleStairMaze':
-        let maze2 = new SimpleStairMaze(this.rows-1, this.cols-1,this.startRow-1,this.startCol-1,this.endRow-1,this.endCol-1,this.speed);
+        let maze2 = new SimpleStairMaze(this.rows, this.cols,this.startRow-1,this.startCol-1,this.endRow-1,this.endCol-1,this.speed);
         maze2.start();
+        break;
+      case 'recursiveDivision':
+        let maze3 = new RecursiveDivision(this.rows, this.cols,this.startRow-1,this.startCol-1,this.endRow-1,this.endCol-1,this.speed);
+        maze3.start();
         break;
       default:
         break;

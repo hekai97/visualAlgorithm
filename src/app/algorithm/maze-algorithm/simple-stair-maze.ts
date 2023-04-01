@@ -5,10 +5,10 @@ export class SimpleStairMaze extends BaseAlgorithm{
     super(rows, cols, startRow, startCol, endRow, endCol, speed);
   }
   start(): void {
-    let currentPointX = this.rows;
+    let currentPointX = this.rows-1;
     let currentPointY = 0;
     let count = 0;
-    while(currentPointY<=this.cols){
+    while(currentPointY<this.cols){
       console.log(currentPointX,currentPointY)
       if(count%2==0){
         this.setWallWithIndex(currentPointX,currentPointY,true);

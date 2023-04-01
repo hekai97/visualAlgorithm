@@ -382,7 +382,7 @@ export abstract class BaseAlgorithm {
 
   protected isIndexInRange(row: number, col: number): boolean{
     // console.log(row, col,'此时的行列,总行列为',this.rows,this.cols);
-    return row >= 0 && row <= this.rows && col >= 0 && col <= this.cols;
+    return row >= 0 && row < this.rows && col >= 0 && col < this.cols;
   }
 }
 

@@ -34,17 +34,18 @@
   <!-- <mat-form-field appearance="outline">
     <mat-label>图像的权值</mat-label>
   </mat-form-field> -->
-  <mat-form-field class="example-full-width">
-    <mat-label>地图行数</mat-label>
-    <input matInput placeholder="20" name="row" [(ngModel)]="rows" />
-  </mat-form-field>
-  <mat-form-field class="example-full-width">
-    <mat-label>地图列数</mat-label>
-    <input matInput placeholder="40" name="col" [(ngModel)]="cols" />
-  </mat-form-field>
-  <button mat-stroked-button color="primary" (click)="createBoard()">
-    生成地图
-  </button>
+<!--  <mat-form-field class="example-full-width">-->
+<!--    <mat-label>地图行数</mat-label>-->
+<!--    <input matInput placeholder="20" name="row" [(ngModel)]="rows" />-->
+<!--  </mat-form-field>-->
+<!--  <mat-form-field class="example-full-width">-->
+<!--    <mat-label>地图列数</mat-label>-->
+<!--    <input matInput placeholder="40" name="col" [(ngModel)]="cols" />-->
+<!--  </mat-form-field>-->
+<!--  <button mat-stroked-button color="primary" (click)="createBoard()">-->
+<!--    生成地图-->
+<!--  </button>-->
+  速度:
   <mat-slider>
     <input [(value)]="speed" matSliderThumb (valueChange)="generateMaze()" />
   </mat-slider>
