@@ -10,7 +10,7 @@ export class Dijkstra extends BaseAlgorithm{
     let pq = new PriorityQueue<[number, number]>();
     pq.insert(0, [this.startRow, this.startCol]);
     this.setNodeCostWithIndex(this.startRow,this.startCol,0);
-    this.setNodeCostWithIndex(this.endRow,this.endCol,Number.MAX_VALUE);
+    this.setNodeCostWithIndex(this.endRow,this.endCol,2000);
     while (!pq.isEmpty()) {
       let [row, col] = pq.extractMin()!;
       if (this.isEndPoint(row, col)) {

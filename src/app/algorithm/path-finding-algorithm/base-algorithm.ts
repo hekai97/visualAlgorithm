@@ -1,4 +1,5 @@
 export abstract class BaseAlgorithm {
+  private readonly DRAW_CONTROL_TIME = 100;
 
   // 地图的行数
   private _rows: number;
@@ -170,7 +171,7 @@ export abstract class BaseAlgorithm {
         }
       }
     }, this.drawTime);
-    this.drawTime += 100/delay;
+    this.drawTime += this.DRAW_CONTROL_TIME/delay;
   }
 
   protected changeDivColorWithNodeDelay(node: HTMLElement, color: Color, delay: number) {
@@ -223,6 +224,21 @@ export abstract class BaseAlgorithm {
   protected setWallWithNode(node: HTMLElement,wall:boolean) {
     let [row,col] = this.getNodeIndex(node);
     this.setWallWithIndex(row,col,wall);
+  }
+
+  protected setWallWithIndexDelay(row: number, col: number,wall:boolean,delay:number) {
+    if(delay===0){
+      delay = 1;
+    }
+    setTimeout(() => {
+      this.setWallWithIndex(row,col,wall);
+    }, this.drawTime);
+    this.drawTime += this.DRAW_CONTROL_TIME/delay;
+  }
+
+  protected setWallWithNodeDelay(node: HTMLElement,wall:boolean,delay:number) {
+    let [row,col] = this.getNodeIndex(node);
+    this.setWallWithIndexDelay(row,col,wall,delay);
   }
 
   /**
