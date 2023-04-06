@@ -213,6 +213,9 @@ export abstract class BaseAlgorithm {
   }
 
   protected setWallWithIndex(row: number, col: number,wall:boolean) {
+    if(this.isStartPoint(row,col)||this.isEndPoint(row,col)){
+      return;
+    }
     this.getIndexNode(row, col)!.setAttribute('wall', wall.toString());
     if(wall){
       this.getIndexNode(row, col)!.classList.add('wall');

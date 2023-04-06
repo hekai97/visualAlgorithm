@@ -47,7 +47,7 @@
 <!--  </button>-->
   速度:
   <mat-slider>
-    <input [(value)]="speed" matSliderThumb />
+    <input [(value)]="speed" matSliderThumb (valueChange)="changeSpeedDynamically()" />
   </mat-slider>
 
   <div class="button-area">

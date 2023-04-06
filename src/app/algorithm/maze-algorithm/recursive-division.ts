@@ -1,7 +1,5 @@
 import {BaseAlgorithm} from "../path-finding-algorithm/base-algorithm";
 
-//阿弥陀佛 赛博佛祖保佑
-
 export class RecursiveDivision extends BaseAlgorithm{
   constructor(rows:number,cols:number,startRow: number, startCol: number, endRow: number, endCol: number,speed:number) {
     super(rows, cols, startRow, startCol, endRow, endCol, speed);
@@ -12,130 +10,97 @@ export class RecursiveDivision extends BaseAlgorithm{
     this.setBoundary();
     // 2. 递归分割
     this.divide(1,1,this.rows-2,this.cols-2);
-    // let map = this.generateMap(40,20);
-    // console.log(map);
-    // for (let i = 0; i < this.rows; i++) {
-    //   for (let j = 0; j < this.cols; j++) {
-    //     if(map[i][j]==1){
-    //       if(this.isStartPoint(i,j)||this.isEndPoint(i,j)){
-    //         continue;
-    //       }
-    //       this.setWallWithIndex(i,j,true);
-    //     }
-    //   }
-    // }
-  }
-  generateMap(width: number, height: number): number[][] {
-    // 初始化地图，全部设为1
-    let map: number[][] = Array.from({ length: height }, () =>
-      Array.from({ length: width }, () => 1)
-    );
 
-    // 递归分割函数
-    function divide(left: number, top: number, right: number, bottom: number) {
-      // 计算区域的宽度和高度
-      const width = right - left + 1;
-      const height = bottom - top + 1;
-
-      // 如果区域的宽度或高度小于2，则无法再分割
-      if (width < 2 || height < 2) {
-        return;
-      }
-
-      // 选取一个随机的竖直或水平方向来分割区域
-      const isVertical = Math.random() < 0.5;
-
-      // 如果是竖直方向，则在区域的中间随机选取一列
-      if (isVertical) {
-        const x = Math.floor(randomRange(left + 1, right - 1) / 2) * 2;
-        // 将选中的列从上到下全部设为0，表示打通这一列
-        for (let y = top; y <= bottom; y++) {
-          map[y][x] = 0;
-        }
-        // 在选中列的两侧各进行一次递归分割
-        divide(left, top, x - 1, bottom);
-        divide(x + 1, top, right, bottom);
-      } else {
-        // 如果是水平方向，则在区域的中间随机选取一行
-        const y = Math.floor(randomRange(top + 1, bottom - 1) / 2) * 2;
-        // 将选中的行从左到右全部设为0，表示打通这一行
-        for (let x = left; x <= right; x++) {
-          map[y][x] = 0;
-        }
-        // 在选中行的两侧各进行一次递归分割
-        divide(left, top, right, y - 1);
-        divide(left, y + 1, right, bottom);
-      }
+    for(let i = 0;i<100;++i){
+      console.log(this.getRandomInt(3,5));
     }
-
-    // 生成一个指定范围内的随机数
-    function randomRange(min: number, max: number): number {
-      return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
-
-    // 调用递归分割函数，生成地图
-    divide(0, 0, width - 1, height - 1);
-
-    return map;
   }
-
 
   private setBoundary() {
     for (let i = 0; i < this.rows; i++) {
-      this.setWallWithIndex(i,0,true);
-      this.setWallWithIndex(i,this.cols-1,true);
-    }
-    for (let i = 0; i < this.cols; i++) {
-      this.setWallWithIndex(0,i,true);
-      this.setWallWithIndex(this.rows-1,i,true);
+      for (let j = 0; j < this.cols; j++) {
+        if(i==0 || i==this.rows-1 || j==0 || j==this.cols-1){
+          this.setWallWithIndex(i,j,true);
+        }
+      }
     }
   }
 
   private divide(x1: number, y1: number, x2: number, y2: number) {
-    // 递归结束条件
-    if (x1 >= x2 || y1 >= y2) {
+    // 为什么是小于4呢？因为，在这个矩阵中，我们需要留出空隙，以便于后面的递归分割,不然极容易出现一层墙上面又是一层墙
+    if(Math.abs(x1-x2) < 4 || Math.abs(y1-y2) < 4){
       return;
     }
-    // 随机选择一个方向
-    let isVertical = Math.random() < 0.5;
-    if (isVertical) {
-      // 从左到右生成一个随机数
-      let x = Math.floor(Math.random() * (x2 - x1)) + x1;
-      // 偶数化
-      x = x % 2 == 0 ? x : x + 1;
-      // 生成一个随机数，用于确定挖洞的位置
-      let y = Math.floor(Math.random() * (y2 - y1 + 1)) + y1;
-      // 挖洞
-      for (let i = y1; i <= y2; i++) {
-        if (i == y) {
-          continue;
-        }
-        console.log('i',i,'x',x);
-        this.setWallWithIndex(x,i,true);
+    // 在该矩阵中随机选择一个点，该点不能是紧贴着墙的点
+    let point = this.randomPoint(x1,x2,y1,y2);
+    // 由该点开始，向上下左右开始填充墙
+    for (let i = x1; i <= x2; i++) {
+      this.setWallWithIndex(i,point[1],true);
+    }
+    for (let i = y1; i <= y2; i++) {
+      this.setWallWithIndex(point[0],i,true);
+    }
+    // 选择随机的三堵墙，将其打通
+    this.randomBreakWalls(point[0],point[1],x1,x2,y1,y2);
+    // 递归分割
+    this.divide(x1,y1,point[0],point[1]);
+    this.divide(point[0],y1,x2,point[1]);
+    this.divide(x1,point[1],point[0],y2);
+    this.divide(point[0],point[1],x2,y2);
+  }
+
+  private randomPoint(x1: number, x2: number, y1: number, y2: number) {
+    let x = this.getRandomInt(x1+1,x2-1);
+    let y = this.getRandomInt(y1+1,y2-1);
+    return [x,y];
+  }
+
+  private randomBreakWalls(pointX: number, pointY: number, x1: number, x2: number, y1: number, y2: number) {
+    // 上右下左分别用0，1，2，3表示，随机一个数，表示不打通这堵墙，其余的打通
+    let random = Math.floor(Math.random()*4);
+    for(let i = 0;i<4;++i){
+      if(i==random){
+        continue;
       }
-      // 递归
-      this.divide(x1, y1, x - 1, y2);
-      this.divide(x + 1, y1, x2, y2);
-    } else {
-      // 从上到下生成一个随机数
-      let y = Math.floor(Math.random() * (y2 - y1)) + y1;
-      // 偶数化
-      y = y % 2 == 0 ? y : y + 1;
-      // 生成一个随机数，用于确定挖洞的位置
-      let x = Math.floor(Math.random() * (x2 - x1 + 1)) + x1;
-      // 挖洞
-      for (let i = x1; i <= x2; i++) {
-        if (i == x) {
-          continue;
-        }
-        console.log('i',i,'y',y);
-        this.setWallWithIndex(i,y,true);
-      }
-      // 递归
-      this.divide(x1, y1, x2, y - 1);
-      this.divide(x1, y + 1, x2, y2);
+      this.breakWall(pointX,pointY,x1,x2,y1,y2,i);
     }
   }
 
+  private breakWall(pointX: number, pointY: number, x1: number, x2: number, y1: number, y2: number, orientation: number) {
+    switch (orientation){
+      case 0:
+        // 上
+        let randomX = this.getRandomInt(pointX,x1);
+        this.setWallWithIndex(randomX,pointY,false);
+        break;
+      case 1:
+        // 右
+        let randomY = this.getRandomInt(pointY,y2);
+        this.setWallWithIndex(pointX,randomY,false);
+        break;
+      case 2:
+        // 下
+        let randomX2 = this.getRandomInt(pointX,x2);
+        this.setWallWithIndex(randomX2,pointY,false);
+        break;
+      case 3:
+        // 左
+        let randomY2 = this.getRandomInt(pointY,y1);
+        this.setWallWithIndex(pointX,randomY2,false);
+        break;
+      default:
+        break;
+    }
+  }
+
+  private getRandomInt(a:number, b:number) {
+    let min = Math.min(a,b);
+    let max = Math.max(a,b);
+    // min = Math.ceil(min);
+    // max = Math.floor(max);
+    // return Math.floor(Math.random() * (max - min) + min);
+    // 返回一个开区间的随机数，范围为(min,max),不包括max和min
+    return Math.floor(Math.random() * (max - min - 1)) + min + 1;
+  }
 }
 

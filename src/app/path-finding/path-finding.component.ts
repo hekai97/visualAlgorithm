@@ -233,4 +233,10 @@ export class PathFindingComponent implements OnInit {
       }
     }
   }
+
+  changeSpeedDynamically() {
+    if(this.algorithm!=null){
+      this.algorithm!.speed = this.speed;
+    }
+  }
 }

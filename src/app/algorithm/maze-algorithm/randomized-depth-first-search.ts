@@ -29,25 +29,26 @@ export class RandomizedDepthFirstSearch extends BaseAlgorithm{
     }
     // 然后，将路径放出来
 
-    let map = new Array(this.rows);
-    let visited = new Array(this.rows);
-    for (let i = 0; i < this.rows; i++) {
-      map[i] = new Array(this.cols);
-      visited[i] = new Array(this.cols);
-      for (let j = 0; j < this.cols; j++) {
-        map[i][j] = 1;
-        visited[i][j] = false;
-      }
-    }
+    // let map = new Array(this.rows);
+    // let visited = new Array(this.rows);
+    // for (let i = 0; i < this.rows; i++) {
+    //   map[i] = new Array(this.cols);
+    //   visited[i] = new Array(this.cols);
+    //   for (let j = 0; j < this.cols; j++) {
+    //     map[i][j] = 1;
+    //     visited[i][j] = false;
+    //   }
+    // }
     let stack = [];
     stack.push([this.startRow,this.startCol]);
-    visited[this.startRow][this.startCol] = true;
+    // visited[this.startRow][this.startCol] = true;
+    this.setVisitedWithIndex(this.startRow,this.startCol,true);
     while(stack.length>0) {
       let currentPoint: any;
       currentPoint = stack.pop();
       let currentPointX = currentPoint[0];
       let currentPointY = currentPoint[1];
-      let neighbors = this.getNeighbors(currentPointX,currentPointY,visited);
+      let neighbors = this.getNeighbors(currentPointX,currentPointY);
       if(neighbors.length>0){
         stack.push([currentPointX,currentPointY]);
         let randomIndex = Math.floor(Math.random()*neighbors.length);
@@ -71,7 +72,7 @@ export class RandomizedDepthFirstSearch extends BaseAlgorithm{
         // }
         let x = (currentPointX+randomNeighborX)/2;
         let y = (currentPointY+randomNeighborY)/2;
-        map[x][y] = 0;
+        // map[x][y] = 0;
         // this.changeDivColorWithIndexDelay(randomNeighborX,randomNeighborY,Color.RED,this.speed);
         // this.changeDivColorWithIndexDelay(x,y,Color.RED,this.speed);
         // this.setWallWithIndex(randomNeighborX,randomNeighborY,false);
@@ -79,23 +80,29 @@ export class RandomizedDepthFirstSearch extends BaseAlgorithm{
         this.setWallWithIndexDelay(randomNeighborX,randomNeighborY,false,this.speed);
         this.setWallWithIndexDelay(x,y,false,this.speed);
         stack.push([randomNeighborX,randomNeighborY]);
-        visited[randomNeighborX][randomNeighborY] = true;
+        // visited[randomNeighborX][randomNeighborY] = true;
+        this.setVisitedWithIndex(randomNeighborX,randomNeighborY,true);
       }
     }
-    console.log(map);
+    // console.log(map);
+    for(let i=0;i<this.rows;i++){
+      for(let j=0;j<this.cols;j++){
+        this.setVisitedWithIndex(i,j,false);
+      }
+    }
   }
-  private getNeighbors(currentPointX: number, currentPointY: number, visited: boolean[][]): any[] {
+  private getNeighbors(currentPointX: number, currentPointY: number): any[] {
     let neighbors = [];
-    if(this.isIndexInRange(currentPointX-2,currentPointY) && !visited[currentPointX-2][currentPointY]){
+    if(this.isIndexInRange(currentPointX-2,currentPointY) && !this.isVisitedWithIndex(currentPointX-2,currentPointY)){
       neighbors.push([currentPointX-2,currentPointY]);
     }
-    if(this.isIndexInRange(currentPointX+2,currentPointY) && !visited[currentPointX+2][currentPointY]){
+    if(this.isIndexInRange(currentPointX+2,currentPointY) && !this.isVisitedWithIndex(currentPointX+2,currentPointY)){
       neighbors.push([currentPointX+2,currentPointY]);
     }
-    if(this.isIndexInRange(currentPointX,currentPointY-2) && !visited[currentPointX][currentPointY-2]){
+    if(this.isIndexInRange(currentPointX,currentPointY-2) && !this.isVisitedWithIndex(currentPointX,currentPointY-2)){
       neighbors.push([currentPointX,currentPointY-2]);
     }
-    if(this.isIndexInRange(currentPointX,currentPointY+2) && !visited[currentPointX][currentPointY+2]){
+    if(this.isIndexInRange(currentPointX,currentPointY+2) && !this.isVisitedWithIndex(currentPointX,currentPointY+2)){
       neighbors.push([currentPointX,currentPointY+2]);
     }
     return neighbors;
