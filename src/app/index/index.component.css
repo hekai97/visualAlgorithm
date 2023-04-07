@@ -25,3 +25,7 @@
 .font-30{
   font-size: 30px;
 }
+
+mat-grid-tile {
+  background: lightblue;
+}

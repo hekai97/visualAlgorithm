@@ -16,6 +16,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import {MatBadgeModule} from '@angular/material/badge';
 import {MatCardModule} from '@angular/material/card';
 import {MatIconModule} from "@angular/material/icon";
+import {MatGridListModule} from "@angular/material/grid-list";
 
 @NgModule({
   declarations: [AppComponent, PathFindingComponent, IndexComponent],
@@ -33,6 +34,7 @@ import {MatIconModule} from "@angular/material/icon";
     MatBadgeModule,
     MatCardModule,
     MatIconModule,
+    MatGridListModule,
   ],
   providers: [],
   bootstrap: [AppComponent],
