@@ -1,0 +1,27 @@
+.center-table {
+  justify-content: center;
+  align-items: center;
+  margin: 25px auto;
+}
+.card {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+  margin-right: 40px;
+  margin-bottom: 20px;
+  cursor: pointer;
+  height: 300px;
+  width: 400px;
+}
+.center-text{
+  /*max-width: 60%;*/
+  left: 50%;
+  top: 50%;
+  position: absolute;
+  transform: translate(-50%, -50%); /* 水平居中，垂直居中*/
+}
+
+.font-30{
+  font-size: 30px;
+}

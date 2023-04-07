@@ -14,6 +14,8 @@ import { FormsModule } from '@angular/forms';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDividerModule } from '@angular/material/divider';
 import {MatBadgeModule} from '@angular/material/badge';
+import {MatCardModule} from '@angular/material/card';
+import {MatIconModule} from "@angular/material/icon";
 
 @NgModule({
   declarations: [AppComponent, PathFindingComponent, IndexComponent],
@@ -29,6 +31,8 @@ import {MatBadgeModule} from '@angular/material/badge';
     MatSnackBarModule,
     MatDividerModule,
     MatBadgeModule,
+    MatCardModule,
+    MatIconModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

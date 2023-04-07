@@ -1,5 +1,7 @@
 .main {
   /*margin-top: 10px;*/
+  background: #e0e5ec;
+  /*efeff4*/
 }
 .container {
   display: grid;

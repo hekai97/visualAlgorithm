@@ -14,7 +14,7 @@ export class SimpleStairMaze extends BaseAlgorithm{
         this.setWallWithIndex(currentPointX,currentPointY,true);
         currentPointY++;
         currentPointX--;
-        if(currentPointX==0){
+        if(currentPointX==1){
           count++;
         }
       }
