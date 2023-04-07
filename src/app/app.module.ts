@@ -17,9 +17,11 @@ import {MatBadgeModule} from '@angular/material/badge';
 import {MatCardModule} from '@angular/material/card';
 import {MatIconModule} from "@angular/material/icon";
 import {MatGridListModule} from "@angular/material/grid-list";
+import { SortingComponent } from './sorting/sorting.component';
+import {MatTabsModule} from "@angular/material/tabs";
 
 @NgModule({
-  declarations: [AppComponent, PathFindingComponent, IndexComponent],
+  declarations: [AppComponent, PathFindingComponent, IndexComponent, SortingComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -35,6 +37,7 @@ import {MatGridListModule} from "@angular/material/grid-list";
     MatCardModule,
     MatIconModule,
     MatGridListModule,
+    MatTabsModule,
   ],
   providers: [],
   bootstrap: [AppComponent],
