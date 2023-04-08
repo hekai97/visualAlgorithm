@@ -4,11 +4,45 @@
     <!--  <mat-tab label="Second"> Content 2 </mat-tab>-->
     <!--  <mat-tab label="Third"> Content 3 </mat-tab>-->
     <mat-tab *ngFor="let tab of algorithm" label="{{tab.label}}">
-      <button mat-raised-button color="primary">生成数据</button>
-      <mat-form-field class="input-area">
-        <mat-label>Clearable input</mat-label>
-        <input matInput type="text" [(ngModel)]="sortArray" (ngModelChange)="printArray()">
-      </mat-form-field>
+      <div class="content">
+        <button mat-raised-button color="primary" (click)="randomArray()">生成数据</button>
+        <mat-form-field class="input-area">
+          <mat-label>数组</mat-label>
+          <input matInput type="text" [ngModel]="sortArray" (ngModelChange)="changeArray($event)" [pattern]="reg">
+<!--          TODO 这里的错误信息无法正确显示-->
+          <mat-error *ngIf="overMaxNumber">输入数字不能超过{{maxNumber}}</mat-error>
+          <mat-error *ngIf="reg">输入格式为[数字,数字,数字]</mat-error>
+        </mat-form-field>
+        速度：
+        <mat-slider class="slider-length" min="{{minSpeed}}" max="{{maxSpeed}}" step="{{maxSpeed/100}}" showTickMarks
+                    discrete>
+          <input matSliderThumb [(value)]="speed">
+        </mat-slider>
+        <button mat-icon-button color="primary">
+          <mat-icon>play_arrow</mat-icon>
+          <!--        <mat-icon>pause</mat-icon>-->
+        </button>
+      </div>
+      <!--      <div class="sort-area">-->
+      <!--        <div class="sort-item" *ngFor="let item of sortArray">-->
+      <!--          <div class="sort-item-content" >{{item}}</div>-->
+      <!--        </div>-->
+      <!--      </div>-->
+      <div class="sort-card">
+        <div class="sort-title">
+          <div class="sort-name">{{tab.name}}</div>
+          <div class="sort-time">时间：00:00:00</div>
+        </div>
+        <div class="sort-area">
+          <div class="sort-item {{tab.name}}" *ngFor="let item of sortArray">
+            <div class="sort-item-content">{{item}}</div>
+          </div>
+        </div>
+        <div class="sort-footer">
+          <div class="sort-swap">交换次数：0</div>
+          <div class="sort-compare">比较次数：0</div>
+        </div>
+      </div>
     </mat-tab>
   </mat-tab-group>
 </div>
