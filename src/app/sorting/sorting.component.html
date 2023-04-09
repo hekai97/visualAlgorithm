@@ -6,6 +6,7 @@
     <mat-tab *ngFor="let tab of algorithm" label="{{tab.label}}">
       <div class="content">
         <button mat-raised-button color="primary" (click)="randomArray()">生成数据</button>
+        <button mat-raised-button color="primary" (click)="playAnimation(0,1)">测试</button>
         <mat-form-field class="input-area">
           <mat-label>数组</mat-label>
           <input matInput type="text" [ngModel]="sortArray" (ngModelChange)="changeArray($event)" [pattern]="reg">
@@ -34,7 +35,7 @@
           <div class="sort-time">时间：00:00:00</div>
         </div>
         <div class="sort-area">
-          <div class="sort-item {{tab.name}}" *ngFor="let item of sortArray">
+          <div class="sort-item {{tab.name}}" [@swap]="animationState" *ngFor="let item of sortArray;let i = index" [attr.id]="i">
             <div class="sort-item-content">{{item}}</div>
           </div>
         </div>
