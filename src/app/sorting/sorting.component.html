@@ -3,10 +3,9 @@
     <!--  <mat-tab label="First"> Content 1 </mat-tab>-->
     <!--  <mat-tab label="Second"> Content 2 </mat-tab>-->
     <!--  <mat-tab label="Third"> Content 3 </mat-tab>-->
-    <mat-tab *ngFor="let tab of algorithm" label="{{tab.label}}">
+    <mat-tab *ngFor="let tab of algorithm;let algorithmIndex=index" label="{{tab.label}}">
       <div class="content">
         <button mat-raised-button color="primary" (click)="randomArray()">生成数据</button>
-        <button mat-raised-button color="primary" (click)="playAnimation(0,1)">测试</button>
         <mat-form-field class="input-area">
           <mat-label>数组</mat-label>
           <input matInput type="text" [ngModel]="sortArray" (ngModelChange)="changeArray($event)" [pattern]="reg">
@@ -17,9 +16,9 @@
         速度：
         <mat-slider class="slider-length" min="{{minSpeed}}" max="{{maxSpeed}}" step="{{maxSpeed/100}}" showTickMarks
                     discrete>
-          <input matSliderThumb [(value)]="speed">
+          <input matSliderThumb [(value)]="speed" (valueChange)="changeSpeed()">
         </mat-slider>
-        <button mat-icon-button color="primary">
+        <button mat-icon-button color="primary" (click)="startSort(algorithmIndex)">
           <mat-icon>play_arrow</mat-icon>
           <!--        <mat-icon>pause</mat-icon>-->
         </button>
@@ -35,7 +34,7 @@
           <div class="sort-time">时间：00:00:00</div>
         </div>
         <div class="sort-area">
-          <div class="sort-item {{tab.name}}" [@swap]="animationState" *ngFor="let item of sortArray;let i = index" [attr.id]="i">
+          <div class="sort-item {{tab.value}}" *ngFor="let item of sortArray;let i = index" [attr.id]="i">
             <div class="sort-item-content">{{item}}</div>
           </div>
         </div>

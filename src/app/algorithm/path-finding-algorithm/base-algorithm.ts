@@ -40,6 +40,7 @@ export abstract class BaseAlgorithm {
   }
 
   set speed(value: number) {
+    console.log(value);
     this._speed = value;
   }
 
@@ -171,7 +172,7 @@ export abstract class BaseAlgorithm {
         }
       }
     }, this.drawTime);
-    this.drawTime += this.DRAW_CONTROL_TIME/delay;
+    this.drawTime += this.DRAW_CONTROL_TIME/this.speed;
   }
 
   protected changeDivColorWithNodeDelay(node: HTMLElement, color: Color, delay: number) {

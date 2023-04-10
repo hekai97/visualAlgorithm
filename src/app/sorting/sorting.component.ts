@@ -2,6 +2,9 @@ import {Component, Input, OnInit} from '@angular/core';
 import {FormControl, FormGroupDirective, NgForm} from "@angular/forms";
 import {ErrorStateMatcher} from "@angular/material/core";
 import {animate, AnimationBuilder, keyframes, state, style, transition, trigger} from "@angular/animations";
+import {SortAlgorithm} from "../algorithm/sort-algorithm/sort-algorithm";
+import {BubbleSort} from "../algorithm/sort-algorithm/bubble-sort";
+import {QuickSort} from "../algorithm/sort-algorithm/quick-sort";
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -92,7 +95,6 @@ export class SortingComponent implements OnInit {
   matcher = new MyErrorStateMatcher();
   /** 正则表达式，输入格式为数字,逗号，数字，逗号*/
   readonly reg = /^(\d+)(,\d+)*$/;
-
   // 排序的时候，设置的数字最大值
   readonly maxNumber = 50;
   readonly minSpeed = 1;
@@ -109,6 +111,7 @@ export class SortingComponent implements OnInit {
     {name: "Counting Sort", value: "countingSort", label: "计数排序"},
     {name: "Bucket Sort", value: "bucketSort", label: "桶排序"},
   ];
+  private sortAlgorithm: SortAlgorithm | null = null;
   animationState = 'start';
   sortArray: number[] = [];
   /**
@@ -156,42 +159,84 @@ export class SortingComponent implements OnInit {
     this.sortArray = Array.from({length: length}, () => Math.floor(Math.random() * this.maxNumber));
   }
 
-  playAnimation(index1: number, index2: number) {
-    // TODO 这块创建了动画，不过需要抽离出来，因为每个排序算法都需要创建动画
-    console.log("playAnimation");
-    // 找到class=sort-item,id=index的div元素
-    let div1 = document.querySelector(`.sort-item[id="${index1}"]`);
-    let div2 = document.querySelector(`.sort-item[id="${index2}"]`);
-    console.log(div1);
-    console.log(div2);
-    let width = div1!.getBoundingClientRect().width;
-    let height = div1!.getBoundingClientRect().height;
-    console.log(div1!.getBoundingClientRect());
-    console.log(div2!.getBoundingClientRect());
-    let left = div1!.getBoundingClientRect().x>div2!.getBoundingClientRect().x?div2:div1;
-    let right = div1!.getBoundingClientRect().x>div2!.getBoundingClientRect().x?div1:div2;
-    const factory = this.animationBuilder.build([
-      animate(`${this.speed*100}ms ease-in-out`, keyframes([
-          // 左边的div先向上移动，然后向右移动，最后向下移动
-          style({transform: `translateY(-${height}px) translateX(0)`, offset: 0}),
-          style({transform: `translateY(-${height}px) translateX(${right!.getBoundingClientRect().x-left!.getBoundingClientRect().x}px)`, offset: 0.4}),
-          style({transform: `translateY(0) translateX(${right!.getBoundingClientRect().x-left!.getBoundingClientRect().x}px)`, offset: 1}),
-        ])
-      )]);
-    const factory2 = this.animationBuilder.build([
-      animate(`${this.speed*100}ms ease-in-out`, keyframes([
-          // 右边的div先向下移动，然后向左移动，最后向上移动
-          style({transform: `translateY(${height}px) translateX(0)`, offset: 0}),
-          style({transform: `translateY(${height}px) translateX(${left!.getBoundingClientRect().x-right!.getBoundingClientRect().x}px)`, offset: 0.4}),
-          style({transform: `translateY(0) translateX(${left!.getBoundingClientRect().x-right!.getBoundingClientRect().x}px)`, offset: 1}),
-          ])
-      )]);
-    const player = factory.create(left!);
-    const player2 = factory2.create(right!);
-    player.play();
-    player2.play();
-    // 更改div的id
-    left!.setAttribute("id", index2.toString());
-    right!.setAttribute("id", index1.toString());
+  // playAnimation(index1: number, index2: number) {
+  //   // TODO 这块创建了动画，不过需要抽离出来，因为每个排序算法都需要创建动画
+  //   console.log("playAnimation");
+  //   // 找到class=sort-item,id=index的div元素
+  //   let div1 = document.querySelector(`.sort-item[id="${index1}"]`);
+  //   let div2 = document.querySelector(`.sort-item[id="${index2}"]`);
+  //   console.log(div1);
+  //   console.log(div2);
+  //   let width = div1!.getBoundingClientRect().width;
+  //   let height = div1!.getBoundingClientRect().height;
+  //   console.log(div1!.getBoundingClientRect());
+  //   console.log(div2!.getBoundingClientRect());
+  //   let left = div1!.getBoundingClientRect().x>div2!.getBoundingClientRect().x?div2:div1;
+  //   let right = div1!.getBoundingClientRect().x>div2!.getBoundingClientRect().x?div1:div2;
+  //   const factory = this.animationBuilder.build([
+  //     animate(`${this.speed*100}ms ease-in-out`, keyframes([
+  //         // 左边的div先向上移动，然后向右移动，最后向下移动
+  //         style({transform: `translateY(-${height}px) translateX(0)`, offset: 0}),
+  //         style({transform: `translateY(-${height}px) translateX(${right!.getBoundingClientRect().x-left!.getBoundingClientRect().x}px)`, offset: 0.4}),
+  //         style({transform: `translateY(0) translateX(${right!.getBoundingClientRect().x-left!.getBoundingClientRect().x}px)`, offset: 1}),
+  //       ])
+  //     )]);
+  //   const factory2 = this.animationBuilder.build([
+  //     animate(`${this.speed*100}ms ease-in-out`, keyframes([
+  //         // 右边的div先向下移动，然后向左移动，最后向上移动
+  //         style({transform: `translateY(${height}px) translateX(0)`, offset: 0}),
+  //         style({transform: `translateY(${height}px) translateX(${left!.getBoundingClientRect().x-right!.getBoundingClientRect().x}px)`, offset: 0.4}),
+  //         style({transform: `translateY(0) translateX(${left!.getBoundingClientRect().x-right!.getBoundingClientRect().x}px)`, offset: 1}),
+  //         ])
+  //     )]);
+  //   const player = factory.create(left!);
+  //   const player2 = factory2.create(right!);
+  //   player.play();
+  //   player2.play();
+  //   // 更改div的id
+  //   left!.setAttribute("id", index2.toString());
+  //   right!.setAttribute("id", index1.toString());
+  // }
+  // test() {
+  //   this.sortAlgorithm = new BubbleSort(this.sortArray, this.speed,this.animationBuilder);
+  //   this.sortAlgorithm.startSort();
+  // }
+  startSort(index: number) {
+    console.log(index);
+    switch (index) {
+      case 0:
+        this.sortAlgorithm = new BubbleSort(this.sortArray, this.speed,this.animationBuilder);
+        break;
+      // case 1:
+      //   this.sortAlgorithm = new SelectionSort(this.sortArray, this.speed,this.animationBuilder);
+      //   break;
+      // case 2:
+      //   this.sortAlgorithm = new InsertionSort(this.sortArray, this.speed,this.animationBuilder);
+      //   break;
+      // case 3:
+      //   this.sortAlgorithm = new MergeSort(this.sortArray, this.speed,this.animationBuilder);
+      //   break;
+      case 4:
+        this.sortAlgorithm = new QuickSort(this.sortArray, this.speed,this.animationBuilder);
+        break;
+      // case 5:
+      //   this.sortAlgorithm = new HeapSort(this.sortArray, this.speed,this.animationBuilder);
+      //   break;
+      // case 6:
+      //   this.sortAlgorithm = new RadixSort(this.sortArray, this.speed,this.animationBuilder);
+      //   break;
+      // case 7:
+      //   this.sortAlgorithm = new CountingSort(this.sortArray, this.speed,this.animationBuilder);
+      //   break;
+      // case 8:
+      //   this.sortAlgorithm = new BucketSort(this.sortArray, this.speed,this.animationBuilder);
+      //   break;
+    }
+    this.sortAlgorithm!.startSort();
+  }
+  changeSpeed() {
+    if(this.sortAlgorithm){
+      this.sortAlgorithm.speed=this.speed;
+    }
   }
 }
