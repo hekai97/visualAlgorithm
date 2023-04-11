@@ -1,17 +1,18 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {FormControl, FormGroupDirective, NgForm} from "@angular/forms";
+import {FormControl, FormGroupDirective, NgForm, Validators} from "@angular/forms";
 import {ErrorStateMatcher} from "@angular/material/core";
 import {animate, AnimationBuilder, keyframes, state, style, transition, trigger} from "@angular/animations";
 import {SortAlgorithm} from "../algorithm/sort-algorithm/sort-algorithm";
 import {BubbleSort} from "../algorithm/sort-algorithm/bubble-sort";
 import {QuickSort} from "../algorithm/sort-algorithm/quick-sort";
+import {SelectionSort} from "../algorithm/sort-algorithm/selection-sort";
+import {InsertionSort} from "../algorithm/sort-algorithm/insertion-sort";
+import {MergeSort} from "../algorithm/sort-algorithm/merge-sort";
+import {HeapSort} from "../algorithm/sort-algorithm/heap-sort";
+import {RadixSort} from "../algorithm/sort-algorithm/radix-sort";
+import {CountingSort} from "../algorithm/sort-algorithm/counting-sort";
+import {BucketSort} from "../algorithm/sort-algorithm/bucket-sort";
 
-export class MyErrorStateMatcher implements ErrorStateMatcher {
-  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
-    console.log(form);
-    return true;
-  }
-}
 
 @Component({
   selector: 'app-sorting',
@@ -39,7 +40,6 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
       state('start', style({
         transform: 'translateY(0) translateX(0)'
       })),
-      // TODO 更改动画
       // transition('start => up', [
       //   animate('{{speed1}}s ease-in-out', keyframes([
       //     style({ transform: 'translateY(0) translateX(0)', offset: 0 }),
@@ -92,14 +92,13 @@ export class SortingComponent implements OnInit {
     this.initArray();
   }
 
-  matcher = new MyErrorStateMatcher();
   /** 正则表达式，输入格式为数字,逗号，数字，逗号*/
-  readonly reg = /^(\d+)(,\d+)*$/;
+  readonly reg = /^((\d+)(,)?)*$/;
   // 排序的时候，设置的数字最大值
   readonly maxNumber = 50;
   readonly minSpeed = 1;
   readonly maxSpeed = 100;
-  speed = 10;
+  speed = 50;
   algorithm = [
     {name: "Bubble Sort", value: "bubbleSort", label: "冒泡排序"},
     {name: "Selection Sort", value: "selectionSort", label: "选择排序"},
@@ -111,18 +110,56 @@ export class SortingComponent implements OnInit {
     {name: "Counting Sort", value: "countingSort", label: "计数排序"},
     {name: "Bucket Sort", value: "bucketSort", label: "桶排序"},
   ];
-  private sortAlgorithm: SortAlgorithm | null = null;
-  animationState = 'start';
+  sortAlgorithm: SortAlgorithm | null = null;
   sortArray: number[] = [];
+  sortArrayString: string = '';
+  inputControl = new FormControl('',[
+     Validators.required,
+    this.validInputFormatFunction,
+    this.validInputNumberFunction
+  ]);
+
+  costMinute = 0;
+  costSecond = 0;
+  costMillisecond = 0;
+  timerInterval: any = null;
+
+  /**
+   * 该验证规则为验证输入的格式，是不是符合要求，如果符合要求的话，返回null，否则返回一个对象，该对象的key为formatError，value为true
+   * @param control
+   */
+  validInputFormatFunction(control: FormControl): { [key: string]: any } | null {
+    if(/^((\d+)(,)?)*$/.test(control.value)){
+      return null;
+    }else{
+      return {formatError:true};
+    }
+  }
+
+  /**
+   * 该验证规则为验证输入的数字是否超过了最大值，如果超过最大值的话，返回一个对象，该对象的key为overMaxNumber，value为true
+   * @param control
+   */
+  validInputNumberFunction(control: FormControl): { [key: string]: any } | null {
+    let max = 50;
+    let min = 0;
+    let array = control.value.split(',');
+    for(let i = 0;i < array.length;i++){
+      if(array[i] > max || array[i] < min){
+        return {overMaxNumber:true};
+      }
+    }
+    return null;
+  }
   /**
    * 该数据是用来判断用户的输入是否超过了最大值，如果超过最大值的话，该值为true，并且在前端界面会显示错误信息。
    */
-  overMaxNumber: boolean = false;
 
   private initArray() {
     for (let i = 0; i < 10; i++) {
       this.sortArray.push(Math.floor(Math.random() * this.maxNumber));
     }
+    this.sortArrayString = this.sortArray.toString();
   }
 
   printArray() {
@@ -131,22 +168,50 @@ export class SortingComponent implements OnInit {
 
   /**
    * 输入框输入的值，改变数组
-   * @param numberStr
    */
-  changeArray(numberStr: string) {
-    console.log(this.overMaxNumber);
-    if (this.reg.test(numberStr)) {
-      // 判断拆分的数据是否超过最大值
-      if (numberStr.split(",").some((item) => parseInt(item) > this.maxNumber)) {
-        this.animationState = 'up';
-        this.overMaxNumber = true;
-        return;
-      }
-      this.animationState = 'start';
-      this.overMaxNumber = false;
-      this.sortArray = numberStr.split(",").map((item) => parseInt(item));
+  changeArray() {
+    // 将输入的obj转成字符串
+    console.log(this.sortArrayString);
+    // console.log(this.sortArrayString);
+    if(this.inputControl.hasError('formatError')){
+      return;
     }
-    console.log(this.sortArray);
+    if(this.inputControl.hasError('overMaxNumber')){
+      return;
+    }
+    let array = this.sortArrayString.split(',');
+    let copyArray = [];
+    for (let i = 0; i < array.length; i++) {
+      if(array[i] != ""){
+        copyArray.push(parseInt(array[i]));
+      }
+    }
+    this.sortArray = copyArray;
+
+    // console.log(numberStr);
+    // if (this.reg.test(numberStr)) {
+    //   // 判断拆分的数据是否超过最大值
+    //   if (numberStr.split(",").some((item) => parseInt(item) > this.maxNumber)) {
+    //     console.log("超过最大值");
+    //     this.inputControl.setErrors({overMaxNumber: true});
+    //     return;
+    //   }
+    //   // this.overMaxNumber = false;
+    //   // this.sortArray = numberStr.split(",").map((item) => parseInt(item));
+    //   let array = numberStr.split(",");
+    //   let copyArray = [];
+    //   for (let i = 0; i < array.length; i++) {
+    //     if(array[i] != ""){
+    //       copyArray.push(parseInt(array[i]));
+    //     }
+    //   }
+    //   this.sortArray = copyArray;
+    //   // this.printArray();
+    // }else{
+    //   this.inputControl.setErrors({formError: true});
+    //   console.log("输入格式错误");
+    // }
+    // console.log(this.sortArray);
   }
 
   /**
@@ -157,6 +222,7 @@ export class SortingComponent implements OnInit {
     const length = Math.floor(Math.random() * 10) + 10;
     // 根据这个长度生成一个数组，数组的值是0-50的随机数
     this.sortArray = Array.from({length: length}, () => Math.floor(Math.random() * this.maxNumber));
+    this.sortArrayString = this.sortArray.toString();
   }
 
   // playAnimation(index1: number, index2: number) {
@@ -207,36 +273,70 @@ export class SortingComponent implements OnInit {
       case 0:
         this.sortAlgorithm = new BubbleSort(this.sortArray, this.speed,this.animationBuilder);
         break;
-      // case 1:
-      //   this.sortAlgorithm = new SelectionSort(this.sortArray, this.speed,this.animationBuilder);
-      //   break;
-      // case 2:
-      //   this.sortAlgorithm = new InsertionSort(this.sortArray, this.speed,this.animationBuilder);
-      //   break;
-      // case 3:
-      //   this.sortAlgorithm = new MergeSort(this.sortArray, this.speed,this.animationBuilder);
-      //   break;
+      case 1:
+        this.sortAlgorithm = new SelectionSort(this.sortArray, this.speed,this.animationBuilder);
+        break;
+      case 2:
+        this.sortAlgorithm = new InsertionSort(this.sortArray, this.speed,this.animationBuilder);
+        break;
+      case 3:
+        this.sortAlgorithm = new MergeSort(this.sortArray, this.speed,this.animationBuilder);
+        break;
       case 4:
         this.sortAlgorithm = new QuickSort(this.sortArray, this.speed,this.animationBuilder);
         break;
-      // case 5:
-      //   this.sortAlgorithm = new HeapSort(this.sortArray, this.speed,this.animationBuilder);
-      //   break;
-      // case 6:
-      //   this.sortAlgorithm = new RadixSort(this.sortArray, this.speed,this.animationBuilder);
-      //   break;
-      // case 7:
-      //   this.sortAlgorithm = new CountingSort(this.sortArray, this.speed,this.animationBuilder);
-      //   break;
-      // case 8:
-      //   this.sortAlgorithm = new BucketSort(this.sortArray, this.speed,this.animationBuilder);
-      //   break;
+      case 5:
+        this.sortAlgorithm = new HeapSort(this.sortArray, this.speed,this.animationBuilder);
+        break;
+      case 6:
+        this.sortAlgorithm = new RadixSort(this.sortArray, this.speed,this.animationBuilder);
+        break;
+      case 7:
+        this.sortAlgorithm = new CountingSort(this.sortArray, this.speed,this.animationBuilder);
+        break;
+      case 8:
+        this.sortAlgorithm = new BucketSort(this.sortArray, this.speed,this.animationBuilder);
+        break;
     }
     this.sortAlgorithm!.startSort();
+    this.startCostTime();
   }
   changeSpeed() {
     if(this.sortAlgorithm){
       this.sortAlgorithm.speed=this.speed;
     }
+  }
+
+  replay() {
+    // 首先，停止所有的动画，然后，重新生成数据
+    if(this.sortAlgorithm){
+      this.sortAlgorithm.stopSort();
+      this.sortAlgorithm.removeBackGroundColor();
+    }
+    this.sortAlgorithm = null;
+    this.randomArray();
+  }
+
+  startCostTime() {
+    this.costMinute = 0;
+    this.costSecond = 0;
+    this.costMillisecond = 0;
+    this.timerInterval = setInterval(() => {
+      this.costMillisecond++;
+      if (this.costMillisecond >= 100) {
+        this.costSecond++;
+        this.costMillisecond = 0;
+      }
+      if (this.costSecond >= 60) {
+        this.costMinute++;
+        this.costSecond = 0;
+      }
+      if(this.sortAlgorithm&&this.sortAlgorithm.isEnd){
+        this.stopCostTime();
+      }
+    }, 10);
+  }
+  stopCostTime() {
+    clearInterval(this.timerInterval);
   }
 }

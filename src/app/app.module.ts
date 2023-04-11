@@ -10,7 +10,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
-import { FormsModule } from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDividerModule } from '@angular/material/divider';
 import {MatBadgeModule} from '@angular/material/badge';
@@ -22,23 +22,24 @@ import {MatTabsModule} from "@angular/material/tabs";
 
 @NgModule({
   declarations: [AppComponent, PathFindingComponent, IndexComponent, SortingComponent],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    BrowserAnimationsModule,
-    MatSelectModule,
-    MatSliderModule,
-    MatButtonModule,
-    MatInputModule,
-    FormsModule,
-    MatSnackBarModule,
-    MatDividerModule,
-    MatBadgeModule,
-    MatCardModule,
-    MatIconModule,
-    MatGridListModule,
-    MatTabsModule,
-  ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        BrowserAnimationsModule,
+        MatSelectModule,
+        MatSliderModule,
+        MatButtonModule,
+        MatInputModule,
+        FormsModule,
+        MatSnackBarModule,
+        MatDividerModule,
+        MatBadgeModule,
+        MatCardModule,
+        MatIconModule,
+        MatGridListModule,
+        MatTabsModule,
+        ReactiveFormsModule,
+    ],
   providers: [],
   bootstrap: [AppComponent],
 })

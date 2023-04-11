@@ -1,31 +1,35 @@
 import {SortAlgorithm} from "./sort-algorithm";
 
 export class QuickSort extends SortAlgorithm {
-  count: number = 0;
   sort(): void {
-    let newArray = this.array.slice();
-    this.quickSort(newArray, 0, newArray.length - 1);
+    // let newArray = this.array.slice();
+    this.quickSort(this.arrayCopy, 0, this.arrayCopy.length - 1);
   }
 
-  private quickSort(newArray: number[], number: number, number2: number) {
-    if (number < number2) {
-      let pivot = this.partition(newArray, number, number2);
-      this.quickSort(newArray, number, pivot - 1);
-      this.quickSort(newArray, pivot + 1, number2);
+  private quickSort(newArray: number[], left: number, right: number) {
+    if (left < right) {
+      let pivot = this.partition(newArray, left, right);
+      this.quickSort(newArray, left, pivot - 1);
+      this.quickSort(newArray, pivot + 1, right);
     }
   }
 
-  private partition(newArray: number[], number: number, number2: number) {
-    let pivot = newArray[number2];
-    let i = number - 1;
-    for (let j = number; j < number2; j++) {
-      this.addCompare(j, number2, this.count++);
-      if (newArray[j] < pivot) {
-        i++;
-        this.addSwap(i, j, this.count++);
+  private partition(newArray: number[], left: number, right: number) {
+    let pivot = newArray[left];
+    while (left < right) {
+      while (left < right && newArray[right] >= pivot) {
+        this.addCompare(right, left, this.count++);
+        right--;
       }
+      this.swapWithCopy(left, right);
+      this.addSwap(left, right, this.count++);
+      while (left < right && newArray[left] <= pivot) {
+        this.addCompare(left, right, this.count++);
+        left++;
+      }
+      this.swapWithCopy(left, right);
+      this.addSwap(left, right, this.count++);
     }
-    this.addSwap(i + 1, number2, this.count++);
-    return i + 1;
+    return left;
   }
 }
