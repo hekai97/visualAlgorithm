@@ -1,30 +1,42 @@
 import {animate, AnimationBuilder, keyframes, style} from "@angular/animations";
-
+interface AnimationQueue {
+  type: string;
+  i: number;
+  j: number;
+  count: number;
+}
 export abstract class SortAlgorithm {
   array: number[];
   arrayCopy: number[];
   count: number = 0;
   private _speed: number;
   // 单位，毫秒
-  delay: number = 0;
+  // delay: number = 0;
   isEnd: boolean = false;
   // 数组，存放每次比较的两个元素的索引以及这是第几次比较
-  compareArray: number[][] = [];
+  // compareArray: number[][] = [];
   // 数组，存放每次交换的两个元素的索引以及这是第几次交换
-  swapArray: number[][] = [];
+  // swapArray: number[][] = [];
+
+  // 动画序列
+  animationQueue: AnimationQueue[] = [];
 
   // 这两个值用于给前端页面展示
   swapCount: number = 0;
   compareCount: number = 0;
 
-  timers: number[] = [];
+  // timers: number[] = [];
+  sortTimer: number|undefined;
 
   get speed(): number {
     return this._speed;
   }
 
+  getCalculateSpeed(): number {
+    return 1000/this.speed;
+  }
+
   set speed(value: number) {
-    console.log(this.delay);
     this._speed = value;
   }
 
@@ -38,19 +50,39 @@ export abstract class SortAlgorithm {
   startSort() {
     this.sort();
     this.beforePlayAnimation();
-    this.playAnimation();
-    this.afterPlayAnimation();
+    this.playAnimationQueue(0);
+    // this.afterPlayAnimation();
   }
 
   protected abstract sort(): void;
 
-  protected addCompare(i: number, j: number, count: number) {
-    this.compareArray.push([i, j, count]);
+  private playAnimationQueue(index:number) {
+    if(index>=this.animationQueue.length) {
+      this.isEnd = true;
+      this.afterPlayAnimation();
+      return;
+    }else{
+      let animation = this.animationQueue[index];
+      if(animation.type === 'compare') {
+        this.playCompareAnimation(index);
+        this.compareCount++;
+      }else if(animation.type === 'swap') {
+        this.playSwapAnimation(animation.i,animation.j);
+        this.swapCount++;
+      }
+      this.sortTimer=setTimeout(()=>{
+        this.playAnimationQueue(index+1);
+      },this.getCalculateSpeed());
+    }
   }
 
-  protected addSwap(i: number, j: number, count: number) {
-    this.swapArray.push([i, j, count]);
-  }
+  // protected addCompare(i: number, j: number, count: number) {
+  //   this.compareArray.push([i, j, count]);
+  // }
+
+  // protected addSwap(i: number, j: number, count: number) {
+  //   this.swapArray.push([i, j, count]);
+  // }
 
   private swap(i: number, j: number) {
     let temp = this.array[i];
@@ -100,7 +132,7 @@ export abstract class SortAlgorithm {
     let divHeight = leftDiv.getBoundingClientRect().height;
     console.log('i=', i, 'j=', j, 'array[i]=', this.array[i], 'array[j]=', this.array[j], 'length=', length, 'divWidth=', divWidth, 'divHeight=', divHeight, '从i到j移动距离为', length * divWidth);
     const factory = this.animationBuilder.build([
-      animate(`${ 1000 / this.speed}ms ease-in-out`, keyframes([
+      animate(`${ this.getCalculateSpeed()}ms ease-in-out`, keyframes([
           // 左边的div先向上移动，然后向右移动，最后向下移动
           style({transform: `translateY(-${divHeight}px) translateX(0)`, offset: 0.3}),
           style({transform: `translateY(-${divHeight}px) translateX(${length * divWidth}px)`, offset: 0.7}),
@@ -108,7 +140,7 @@ export abstract class SortAlgorithm {
         ])
       )]);
     const factory2 = this.animationBuilder.build([
-      animate(`${ 1000 / this.speed}ms ease-in-out`, keyframes([
+      animate(`${ this.getCalculateSpeed()}ms ease-in-out`, keyframes([
           // 右边的div先向下移动，然后向左移动，最后向上移动
           style({transform: `translateY(${divHeight}px) translateX(0)`, offset: 0.3}),
           style({transform: `translateY(${divHeight}px) translateX(-${length * divWidth}px)`, offset: 0.7}),
@@ -137,13 +169,13 @@ export abstract class SortAlgorithm {
     // rightDiv.id = left.toString();
   }
 
-  playSwapAnimationDelay(i: number, j: number) {
-    let id = setTimeout(() => {
-      this.playSwapAnimation(i, j);
-    }, this.delay);
-    this.timers.push(id);
-    this.adjustDelay();
-  }
+  // playSwapAnimationDelay(i: number, j: number) {
+  //   let id = setTimeout(() => {
+  //     this.playSwapAnimation(i, j);
+  //   }, this.delay);
+  //   this.timers.push(id);
+  //   this.adjustDelay();
+  // }
 
   protected setBackGroundColor(i: number, color: SortColor) {
     let div = this.getDivByIndex(i);
@@ -178,13 +210,13 @@ export abstract class SortAlgorithm {
     }
   }
 
-  protected setBackGroundColorDelay(i: number, color: SortColor) {
-    let id = setTimeout(() => {
-      this.setBackGroundColor(i, color);
-    }, this.delay);
-    this.adjustDelay();
-    this.timers.push(id);
-  }
+  // protected setBackGroundColorDelay(i: number, color: SortColor) {
+  //   let id = setTimeout(() => {
+  //     this.setBackGroundColor(i, color);
+  //   }, this.delay);
+  //   this.adjustDelay();
+  //   this.timers.push(id);
+  // }
 
   /**
    * 播放动画
@@ -195,35 +227,68 @@ export abstract class SortAlgorithm {
    *
    * @private
    */
-  private playAnimation() {
-    // 首先，查看swap数组，如果有元素，就拿到这个count，在compare数组中找到所有比count小的元素，然后顺序执行染色动画
-    let lastCount = 0;
-    while (this.swapArray.length > 0) {
-      let swap = this.swapArray.shift()!;
-      let count = swap[2];
-      let compareArray = this.compareArray.filter((value) => {
-        return value[2] < count && value[2] >= lastCount;
-      });
-      lastCount = count;
-      let length = compareArray.length;
-      for (let i = 0; i < length; i++) {
-        this.setBackGroundColorDelay(compareArray[i][0], SortColor.YELLOW);
-        this.setBackGroundColorDelay(compareArray[i][1], SortColor.YELLOW);
-        this.addCompareCountDelay();
-        this.setBackGroundColorDelay(compareArray[i][0], SortColor.NONE);
-        this.setBackGroundColorDelay(compareArray[i][1], SortColor.NONE);
-        if (i - 1 >= 0) {
-          this.setBackGroundColorDelay(compareArray[i - 1][1], SortColor.NONE);
-        }
-      }
-      if (length > 0) {
-        this.setBackGroundColorDelay(compareArray[0][0], SortColor.GREENYELLOW);
-      }
+  // private playAnimation() {
+  //   // 首先，查看swap数组，如果有元素，就拿到这个count，在compare数组中找到所有比count小的元素，然后顺序执行染色动画
+  //   let lastCount = 0;
+  //   while (this.swapArray.length > 0) {
+  //     let swap = this.swapArray.shift()!;
+  //     let count = swap[2];
+  //     let compareArray = this.compareArray.filter((value) => {
+  //       return value[2] < count && value[2] >= lastCount;
+  //     });
+  //     lastCount = count;
+  //     let length = compareArray.length;
+  //     for (let i = 0; i < length; i++) {
+  //       this.setBackGroundColorDelay(compareArray[i][0], SortColor.YELLOW);
+  //       this.setBackGroundColorDelay(compareArray[i][1], SortColor.YELLOW);
+  //       this.addCompareCountDelay();
+  //       this.setBackGroundColorDelay(compareArray[i][0], SortColor.NONE);
+  //       this.setBackGroundColorDelay(compareArray[i][1], SortColor.NONE);
+  //       if (i - 1 >= 0) {
+  //         this.setBackGroundColorDelay(compareArray[i - 1][1], SortColor.NONE);
+  //       }
+  //     }
+  //     if (length > 0) {
+  //       this.setBackGroundColorDelay(compareArray[0][0], SortColor.GREENYELLOW);
+  //     }
+  //
+  //     this.playSwapAnimationDelay(swap[0], swap[1]);
+  //     this.addSwapCountDelay();
+  //   }
+  // }
 
-      this.playSwapAnimationDelay(swap[0], swap[1]);
-      this.addSwapCountDelay();
-    }
-  }
+  // timerInterval: any;
+  // lastCount =0;
+  // private playAnimationByTimer() {
+  //   this.timerInterval = setInterval(() => {
+  //     console.log('现在的速度是：',this.speed);
+  //     if (this.swapArray.length > 0) {
+  //       let swap = this.swapArray.shift()!;
+  //       let count = swap[2];
+  //       let compareArray = this.compareArray.filter((value) => {
+  //         return value[2] < count && value[2] >= this.lastCount;
+  //       });
+  //       this.lastCount = count;
+  //       let length = compareArray.length;
+  //       for (let i = 0; i < length; i++) {
+  //         this.setBackGroundColor(compareArray[i][0], SortColor.YELLOW);
+  //         this.setBackGroundColor(compareArray[i][1], SortColor.YELLOW);
+  //         this.setBackGroundColor(compareArray[i][0], SortColor.NONE);
+  //         this.setBackGroundColor(compareArray[i][1], SortColor.NONE);
+  //         if (i - 1 >= 0) {
+  //           this.setBackGroundColor(compareArray[i - 1][1], SortColor.NONE);
+  //         }
+  //       }
+  //       if (length > 0) {
+  //         this.setBackGroundColor(compareArray[0][0], SortColor.GREENYELLOW);
+  //       }
+  //
+  //       this.playSwapAnimation(swap[0], swap[1]);
+  //     } else {
+  //       clearInterval(this.timerInterval);
+  //     }
+  //   }, 2000 / this.speed);
+  // }
 
   /**
    * 播放动画之前的准备工作，主要是将isEnd设置为false，这样就可以阻止用户在动画播放的时候进行其他操作
@@ -231,7 +296,7 @@ export abstract class SortAlgorithm {
    */
   private beforePlayAnimation() {
     this.isEnd = false;
-    this.delay = 0;
+    // this.delay = 0;
   }
 
   /**
@@ -240,7 +305,7 @@ export abstract class SortAlgorithm {
    * @private
    */
   private afterPlayAnimation() {
-    let id = setTimeout(() => {
+    setTimeout(() => {
       this.isEnd = true;
       // 查看是否全部染色，如果没有染色的话就染色
       for (let i = 0; i < this.array.length; i++) {
@@ -248,44 +313,72 @@ export abstract class SortAlgorithm {
           this.setBackGroundColor(i, SortColor.GREENYELLOW);
         }
       }
-    }, this.delay);
-    this.timers.push(id);
+    }, this.getCalculateSpeed());
   }
 
-  private adjustDelay() {
-    this.delay += 1000 / this.speed;
+  // private adjustDelay() {
+  //   console.log('当前速度为：',this.speed);
+  //   this.delay += 1000 / this.speed;
+  // }
+
+  // private addCompareCountDelay() {
+  //   let id = setTimeout(() => {
+  //     this.compareCount++;
+  //   }, this.delay);
+  //   this.adjustDelay();
+  //   this.timers.push(id);
+  // }
+
+  protected addCompareAnimation(i: number, j: number) {
+    this.animationQueue.push({type:'compare', i: i, j: j,count:this.count++});
+  }
+  protected addSwapAnimation(i: number, j: number) {
+    this.animationQueue.push({type:'swap', i: i, j: j,count:this.count++});
   }
 
-  private addCompareCountDelay() {
-    let id = setTimeout(() => {
-      this.compareCount++;
-    }, this.delay);
-    this.adjustDelay();
-    this.timers.push(id);
-  }
-
-  private addSwapCountDelay() {
-    let id = setTimeout(() => {
-      this.swapCount++;
-    }, this.delay);
-    this.adjustDelay();
-    this.timers.push(id);
-  }
+  // private addSwapCountDelay() {
+  //   let id = setTimeout(() => {
+  //     this.swapCount++;
+  //   }, this.delay);
+  //   this.adjustDelay();
+  //   this.timers.push(id);
+  // }
 
   stopSort() {
-    for (let timer of this.timers) {
-      clearTimeout(timer);
+    // for (let timer of this.timers) {
+    //   clearTimeout(timer);
+    // }
+    // this.timers = [];
+    if(this.sortTimer){
+      clearTimeout(this.sortTimer);
     }
-    this.timers = [];
     // 将所有的div染回原来的颜色
     for (let i = 0; i < this.array.length; i++) {
       this.setBackGroundColor(i, SortColor.NONE);
     }
+    this.isEnd = true;
   }
 
   public removeBackGroundColor() {
     for (let i = 0; i < this.array.length; i++) {
       this.setBackGroundColor(i, SortColor.NONE);
+    }
+  }
+
+  // 这里的index是指的是animationQueue中的元素的下标
+  private playCompareAnimation(index: number) {
+    // 首先设置它的上一个type=compare的元素的颜色为none，然后设置它的颜色为yellow
+    if(index>0&&index<this.animationQueue.length){
+      let compareArray = this.animationQueue.filter((value) => {
+        return value.type === 'compare' && value.count < index;
+      });
+      let length = compareArray.length;
+      if (length > 0) {
+        this.setBackGroundColor(compareArray[length - 1].i, SortColor.NONE);
+        this.setBackGroundColor(compareArray[length - 1].j, SortColor.NONE);
+      }
+      this.setBackGroundColor(this.animationQueue[index].i, SortColor.YELLOW);
+      this.setBackGroundColor(this.animationQueue[index].j, SortColor.YELLOW);
     }
   }
 }

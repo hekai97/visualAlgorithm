@@ -17,7 +17,7 @@
         </mat-form-field>
         速度：
         <mat-slider class="slider-length" min="{{minSpeed}}" max="{{maxSpeed}}" step="{{maxSpeed/100}}" showTickMarks
-                    discrete [disabled]="!(this.sortAlgorithm==null || this.sortAlgorithm.isEnd)">
+                    discrete >
           <input matSliderThumb [(value)]="speed" (valueChange)="changeSpeed()">
         </mat-slider>
         <button mat-icon-button color="primary" (click)="startSort(algorithmIndex)"
@@ -37,7 +37,7 @@
       <div class="sort-card">
         <div class="sort-title">
           <div class="sort-name">{{tab.name}}</div>
-          <div class="sort-time">时间：{{costMinute}}m:{{costSecond}}s:{{costMillisecond}}ms</div>
+          <div class="sort-time">时间：{{costMinute}}m:{{costSecond}}s:{{costMillisecond*10}}ms</div>
         </div>
         <div class="sort-area">
           <div class="sort-item {{tab.value}}" *ngFor="let item of sortArray;let i = index" [attr.id]="i">

@@ -6,13 +6,15 @@ export class SelectionSort extends SortAlgorithm {
     for (let i = 0; i < this.arrayCopy.length; i++) {
       let minIndex = i;
       for (let j = i + 1; j < this.arrayCopy.length; j++) {
-        this.addCompare(minIndex, j, this.count++);
+        // this.addCompare(minIndex, j, this.count++);
+        this.addCompareAnimation(minIndex, j);
         if (this.arrayCopy[j] < this.arrayCopy[minIndex]) {
           minIndex = j;
         }
       }
       this.swapWithCopy(i, minIndex);
-      this.addSwap(i, minIndex, this.count++);
+      // this.addSwap(i, minIndex, this.count++);
+      this.addSwapAnimation(i, minIndex);
     }
   }
 }

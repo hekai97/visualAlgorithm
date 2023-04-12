@@ -1,7 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {FormControl, FormGroupDirective, NgForm, Validators} from "@angular/forms";
-import {ErrorStateMatcher} from "@angular/material/core";
-import {animate, AnimationBuilder, keyframes, state, style, transition, trigger} from "@angular/animations";
+import {FormControl, Validators} from "@angular/forms";
+import {AnimationBuilder, state, style, trigger} from "@angular/animations";
 import {SortAlgorithm} from "../algorithm/sort-algorithm/sort-algorithm";
 import {BubbleSort} from "../algorithm/sort-algorithm/bubble-sort";
 import {QuickSort} from "../algorithm/sort-algorithm/quick-sort";
@@ -37,9 +36,9 @@ import {BucketSort} from "../algorithm/sort-algorithm/bucket-sort";
       // transition('*=>*',[
       //   animate('0.5s')
       // ]),
-      state('start', style({
-        transform: 'translateY(0) translateX(0)'
-      })),
+      // state('start', style({
+      //   transform: 'translateY(0) translateX(0)'
+      // })),
       // transition('start => up', [
       //   animate('{{speed1}}s ease-in-out', keyframes([
       //     style({ transform: 'translateY(0) translateX(0)', offset: 0 }),
@@ -82,9 +81,6 @@ import {BucketSort} from "../algorithm/sort-algorithm/bucket-sort";
  *     可以使用getBoundingClientRect()方法，该方法返回一个DOMRect对象，该对象包含了元素的位置信息，包括left，top，right，bottom等
  */
 export class SortingComponent implements OnInit {
-
-  @Input() speed1: number = 10;
-
   constructor(private animationBuilder: AnimationBuilder) {
   }
 
@@ -106,9 +102,9 @@ export class SortingComponent implements OnInit {
     {name: "Merge Sort", value: "mergeSort", label: "归并排序"},
     {name: "Quick Sort", value: "quickSort", label: "快速排序"},
     {name: "Heap Sort", value: "heapSort", label: "堆排序"},
-    {name: "Radix Sort", value: "radixSort", label: "基数排序"},
-    {name: "Counting Sort", value: "countingSort", label: "计数排序"},
-    {name: "Bucket Sort", value: "bucketSort", label: "桶排序"},
+    // {name: "Radix Sort", value: "radixSort", label: "基数排序"},
+    // {name: "Counting Sort", value: "countingSort", label: "计数排序"},
+    // {name: "Bucket Sort", value: "bucketSort", label: "桶排序"},
   ];
   sortAlgorithm: SortAlgorithm | null = null;
   sortArray: number[] = [];
@@ -288,16 +284,17 @@ export class SortingComponent implements OnInit {
       case 5:
         this.sortAlgorithm = new HeapSort(this.sortArray, this.speed,this.animationBuilder);
         break;
-      case 6:
-        this.sortAlgorithm = new RadixSort(this.sortArray, this.speed,this.animationBuilder);
-        break;
-      case 7:
-        this.sortAlgorithm = new CountingSort(this.sortArray, this.speed,this.animationBuilder);
-        break;
-      case 8:
-        this.sortAlgorithm = new BucketSort(this.sortArray, this.speed,this.animationBuilder);
-        break;
+      // case 6:
+      //   this.sortAlgorithm = new RadixSort(this.sortArray, this.speed,this.animationBuilder);
+      //   break;
+      // case 7:
+      //   this.sortAlgorithm = new CountingSort(this.sortArray, this.speed,this.animationBuilder);
+      //   break;
+      // case 8:
+      //   this.sortAlgorithm = new BucketSort(this.sortArray, this.speed,this.animationBuilder);
+      //   break;
     }
+    this.sortAlgorithm?.stopSort();
     this.sortAlgorithm!.startSort();
     this.startCostTime();
   }
@@ -315,6 +312,7 @@ export class SortingComponent implements OnInit {
     }
     this.sortAlgorithm = null;
     this.randomArray();
+    this.resetTime();
   }
 
   startCostTime() {
@@ -331,12 +329,18 @@ export class SortingComponent implements OnInit {
         this.costMinute++;
         this.costSecond = 0;
       }
-      if(this.sortAlgorithm&&this.sortAlgorithm.isEnd){
+      if(this.sortAlgorithm&&this.sortAlgorithm.isEnd||this.sortAlgorithm==null){
         this.stopCostTime();
       }
     }, 10);
   }
   stopCostTime() {
     clearInterval(this.timerInterval);
+  }
+
+  resetTime() {
+    this.costMinute = 0;
+    this.costSecond = 0;
+    this.costMillisecond = 0;
   }
 }

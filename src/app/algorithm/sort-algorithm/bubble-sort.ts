@@ -2,11 +2,11 @@ import {SortAlgorithm} from "./sort-algorithm";
 
 export class BubbleSort extends SortAlgorithm{
   sort(): void {
-    // 获得一份array的copy
     // 冒泡排序
     for (let i = 0; i < this.arrayCopy.length-1; i++) {
       for(let j = i+1;j<this.arrayCopy.length;j++) {
-        this.addCompare(i, j, this.count++);
+        // this.addCompare(i, j, this.count++);
+        this.addCompareAnimation(i, j);
         // if(newArray[i]>newArray[j]) {
         //   let temp = newArray[i];
         //   newArray[i] = newArray[j];
@@ -15,7 +15,8 @@ export class BubbleSort extends SortAlgorithm{
         // }
         if(this.arrayCopy[i]>this.arrayCopy[j]) {
           this.swapWithCopy(i,j);
-          this.addSwap(i, j, this.count++);
+          // this.addSwap(i, j, this.count++);
+          this.addSwapAnimation(i, j);
         }
       }
     }

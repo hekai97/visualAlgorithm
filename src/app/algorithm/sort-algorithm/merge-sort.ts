@@ -20,7 +20,8 @@ export class MergeSort extends SortAlgorithm {
     let k = 0;
     let temp = [];
     while (i <= mid && j <= right) {
-      this.addCompare(i, j, this.count++);
+      // this.addCompare(i, j, this.count++);
+      this.addCompareAnimation(i, j);
       if (newArray[i] < newArray[j]) {
         temp[k++] = newArray[i++];
       } else {
@@ -35,7 +36,8 @@ export class MergeSort extends SortAlgorithm {
     }
     for (let i = 0; i < k; i++) {
       newArray[left + i] = temp[i];
-      this.addSwap(left + i, left + i, this.count++);
+      // this.addSwap(left + i, left + i, this.count++);
+      this.addSwapAnimation(left + i, left + i);
     }
   }
 }
