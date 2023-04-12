@@ -99,9 +99,9 @@ export class SortingComponent implements OnInit {
     {name: "Bubble Sort", value: "bubbleSort", label: "冒泡排序"},
     {name: "Selection Sort", value: "selectionSort", label: "选择排序"},
     {name: "Insertion Sort", value: "insertionSort", label: "插入排序"},
-    {name: "Merge Sort", value: "mergeSort", label: "归并排序"},
     {name: "Quick Sort", value: "quickSort", label: "快速排序"},
     {name: "Heap Sort", value: "heapSort", label: "堆排序"},
+    // {name: "Merge Sort", value: "mergeSort", label: "归并排序"},
     // {name: "Radix Sort", value: "radixSort", label: "基数排序"},
     // {name: "Counting Sort", value: "countingSort", label: "计数排序"},
     // {name: "Bucket Sort", value: "bucketSort", label: "桶排序"},
@@ -222,7 +222,7 @@ export class SortingComponent implements OnInit {
   }
 
   // playAnimation(index1: number, index2: number) {
-  //   // TODO 这块创建了动画，不过需要抽离出来，因为每个排序算法都需要创建动画
+  //   // 这块创建了动画，不过需要抽离出来，因为每个排序算法都需要创建动画
   //   console.log("playAnimation");
   //   // 找到class=sort-item,id=index的div元素
   //   let div1 = document.querySelector(`.sort-item[id="${index1}"]`);
@@ -276,14 +276,14 @@ export class SortingComponent implements OnInit {
         this.sortAlgorithm = new InsertionSort(this.sortArray, this.speed,this.animationBuilder);
         break;
       case 3:
-        this.sortAlgorithm = new MergeSort(this.sortArray, this.speed,this.animationBuilder);
-        break;
-      case 4:
         this.sortAlgorithm = new QuickSort(this.sortArray, this.speed,this.animationBuilder);
         break;
-      case 5:
+      case 4:
         this.sortAlgorithm = new HeapSort(this.sortArray, this.speed,this.animationBuilder);
         break;
+      // case 5:
+      //   this.sortAlgorithm = new MergeSort(this.sortArray, this.speed,this.animationBuilder);
+      //   break;
       // case 6:
       //   this.sortAlgorithm = new RadixSort(this.sortArray, this.speed,this.animationBuilder);
       //   break;
@@ -316,9 +316,7 @@ export class SortingComponent implements OnInit {
   }
 
   startCostTime() {
-    this.costMinute = 0;
-    this.costSecond = 0;
-    this.costMillisecond = 0;
+    this.resetTime();
     this.timerInterval = setInterval(() => {
       this.costMillisecond++;
       if (this.costMillisecond >= 100) {

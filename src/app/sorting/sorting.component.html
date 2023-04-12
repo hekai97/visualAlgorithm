@@ -16,7 +16,7 @@
           <mat-error *ngIf="inputControl.hasError('formatError')">输入格式为[数字,数字,数字]</mat-error>
         </mat-form-field>
         速度：
-        <mat-slider class="slider-length" min="{{minSpeed}}" max="{{maxSpeed}}" step="{{maxSpeed/100}}" showTickMarks
+        <mat-slider class="slider-length" min="{{minSpeed}}" max="{{maxSpeed}}" step="{{maxSpeed/100}}"
                     discrete >
           <input matSliderThumb [(value)]="speed" (valueChange)="changeSpeed()">
         </mat-slider>

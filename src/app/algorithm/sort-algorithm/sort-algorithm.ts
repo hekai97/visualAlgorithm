@@ -1,10 +1,12 @@
 import {animate, AnimationBuilder, keyframes, style} from "@angular/animations";
+
 interface AnimationQueue {
   type: string;
   i: number;
   j: number;
   count: number;
 }
+
 export abstract class SortAlgorithm {
   array: number[];
   arrayCopy: number[];
@@ -26,14 +28,14 @@ export abstract class SortAlgorithm {
   compareCount: number = 0;
 
   // timers: number[] = [];
-  sortTimer: number|undefined;
+  sortTimer: number | undefined;
 
   get speed(): number {
     return this._speed;
   }
 
   getCalculateSpeed(): number {
-    return 1000/this.speed;
+    return 1000 / this.speed;
   }
 
   set speed(value: number) {
@@ -56,23 +58,23 @@ export abstract class SortAlgorithm {
 
   protected abstract sort(): void;
 
-  private playAnimationQueue(index:number) {
-    if(index>=this.animationQueue.length) {
+  private playAnimationQueue(index: number) {
+    if (index >= this.animationQueue.length) {
       this.isEnd = true;
       this.afterPlayAnimation();
       return;
-    }else{
+    } else {
       let animation = this.animationQueue[index];
-      if(animation.type === 'compare') {
+      if (animation.type === 'compare') {
         this.playCompareAnimation(index);
         this.compareCount++;
-      }else if(animation.type === 'swap') {
-        this.playSwapAnimation(animation.i,animation.j);
+      } else if (animation.type === 'swap') {
+        this.playSwapAnimation(animation.i, animation.j);
         this.swapCount++;
       }
-      this.sortTimer=setTimeout(()=>{
-        this.playAnimationQueue(index+1);
-      },this.getCalculateSpeed());
+      this.sortTimer = setTimeout(() => {
+        this.playAnimationQueue(index + 1);
+      }, this.getCalculateSpeed());
     }
   }
 
@@ -126,13 +128,10 @@ export abstract class SortAlgorithm {
     let length = right - left;
     let leftDiv = this.getDivByIndex(left);
     let rightDiv = this.getDivByIndex(right);
-    console.log(leftDiv);
-    console.log(rightDiv);
     let divWidth = leftDiv.getBoundingClientRect().width;
     let divHeight = leftDiv.getBoundingClientRect().height;
-    console.log('i=', i, 'j=', j, 'array[i]=', this.array[i], 'array[j]=', this.array[j], 'length=', length, 'divWidth=', divWidth, 'divHeight=', divHeight, '从i到j移动距离为', length * divWidth);
     const factory = this.animationBuilder.build([
-      animate(`${ this.getCalculateSpeed()}ms ease-in-out`, keyframes([
+      animate(`${this.getCalculateSpeed()}ms ease-in-out`, keyframes([
           // 左边的div先向上移动，然后向右移动，最后向下移动
           style({transform: `translateY(-${divHeight}px) translateX(0)`, offset: 0.3}),
           style({transform: `translateY(-${divHeight}px) translateX(${length * divWidth}px)`, offset: 0.7}),
@@ -140,7 +139,7 @@ export abstract class SortAlgorithm {
         ])
       )]);
     const factory2 = this.animationBuilder.build([
-      animate(`${ this.getCalculateSpeed()}ms ease-in-out`, keyframes([
+      animate(`${this.getCalculateSpeed()}ms ease-in-out`, keyframes([
           // 右边的div先向下移动，然后向左移动，最后向上移动
           style({transform: `translateY(${divHeight}px) translateX(0)`, offset: 0.3}),
           style({transform: `translateY(${divHeight}px) translateX(-${length * divWidth}px)`, offset: 0.7}),
@@ -330,10 +329,11 @@ export abstract class SortAlgorithm {
   // }
 
   protected addCompareAnimation(i: number, j: number) {
-    this.animationQueue.push({type:'compare', i: i, j: j,count:this.count++});
+    this.animationQueue.push({type: 'compare', i: i, j: j, count: this.count++});
   }
+
   protected addSwapAnimation(i: number, j: number) {
-    this.animationQueue.push({type:'swap', i: i, j: j,count:this.count++});
+    this.animationQueue.push({type: 'swap', i: i, j: j, count: this.count++});
   }
 
   // private addSwapCountDelay() {
@@ -349,7 +349,7 @@ export abstract class SortAlgorithm {
     //   clearTimeout(timer);
     // }
     // this.timers = [];
-    if(this.sortTimer){
+    if (this.sortTimer) {
       clearTimeout(this.sortTimer);
     }
     // 将所有的div染回原来的颜色
@@ -368,7 +368,7 @@ export abstract class SortAlgorithm {
   // 这里的index是指的是animationQueue中的元素的下标
   private playCompareAnimation(index: number) {
     // 首先设置它的上一个type=compare的元素的颜色为none，然后设置它的颜色为yellow
-    if(index>0&&index<this.animationQueue.length){
+    if (index > 0 && index < this.animationQueue.length) {
       let compareArray = this.animationQueue.filter((value) => {
         return value.type === 'compare' && value.count < index;
       });
