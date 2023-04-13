@@ -34,8 +34,12 @@ export abstract class SortAlgorithm {
     return this._speed;
   }
 
+  /**
+   * this.speed的范围是[1, 100]，这里将其映射到[1000, 100]，即速度越快，延迟越小，这里只是近似地映射，实际上并不是线性的
+   */
   getCalculateSpeed(): number {
-    return 1000 / this.speed;
+    // return 1000 / this.speed;
+    return 1000 - 9 * this.speed;
   }
 
   set speed(value: number) {
@@ -43,21 +47,41 @@ export abstract class SortAlgorithm {
   }
 
 
+  /**
+   * 构造函数
+   * @param array 要排序的数组
+   * @param speed 排序速度，范围是[1, 100]，值越大，速度越快
+   * @param animationBuilder  用于创建动画的AnimationBuilder
+   */
   constructor(array: number[], speed: number, private animationBuilder: AnimationBuilder) {
     this.array = array;
     this.arrayCopy = array.slice();
     this._speed = speed;
   }
 
-  startSort() {
+  /**
+   * 该方法是排序的抽象方法，子类必须实现该方法
+   * @protected
+   */
+  protected abstract sort(): void;
+
+  /**
+   * 该方法是对外公开的排序方法，子类不应该重写该方法，只能在重写sort方法后，由别的类来调用该方法
+   */
+  public startSort() {
     this.sort();
     this.beforePlayAnimation();
     this.playAnimationQueue(0);
     // this.afterPlayAnimation();
   }
 
-  protected abstract sort(): void;
-
+  /**
+   * 该方法的作用是对动画序列进行播放，其中需要注意的是根据动画序列中的type来确定是播放比较动画还是交换动画
+   * 然后给比较次数和交换次数赋值，这是一个递归的定时器，每次播放完一个动画后，都会调用自身，直到播放完所有的动画
+   * 这样可以实现随着外部速度的变化，动画的播放速度也会变化
+   * @param index
+   * @private
+   */
   private playAnimationQueue(index: number) {
     if (index >= this.animationQueue.length) {
       this.isEnd = true;
@@ -70,7 +94,9 @@ export abstract class SortAlgorithm {
         this.compareCount++;
       } else if (animation.type === 'swap') {
         this.playSwapAnimation(animation.i, animation.j);
-        this.swapCount++;
+        if (animation.i !== animation.j) {
+          this.swapCount++;
+        }
       }
       this.sortTimer = setTimeout(() => {
         this.playAnimationQueue(index + 1);
@@ -86,22 +112,44 @@ export abstract class SortAlgorithm {
   //   this.swapArray.push([i, j, count]);
   // }
 
+  /**
+   * 这是真正的交换方法，交换的是array数组中的元素，子类不应该用到此方法
+   * @param i 交换的第一个元素的索引
+   * @param j 交换的第二个元素的索引
+   * @private
+   */
   private swap(i: number, j: number) {
     let temp = this.array[i];
     this.array[i] = this.array[j];
     this.array[j] = temp;
   }
 
+  /**
+   * 这个方法是交换arrayCopy数组中的元素，子类所有的交换都是在arrayCopy数组中进行的，因此，交换的时候使用此方法。
+   * @param i
+   * @param j
+   * @protected
+   */
   protected swapWithCopy(i: number, j: number) {
     let temp = this.arrayCopy[i];
     this.arrayCopy[i] = this.arrayCopy[j];
     this.arrayCopy[j] = temp;
   }
 
+  /**
+   * 判断索引是否有效
+   * @param index
+   * @protected
+   */
   protected isIndexValid(index: number): boolean {
     return index >= 0 && index < this.array.length;
   }
 
+  /**
+   * 通过索引找到对应的div元素
+   * @param index 索引
+   * @protected
+   */
   protected getDivByIndex(index: number): HTMLElement {
     // return document.querySelector(`.sort-item .bubbleSort[id="${index}"]`) as HTMLElement;
     // 找到class=sort-item bubbleSort,id=index的div元素
@@ -121,8 +169,11 @@ export abstract class SortAlgorithm {
     if (!this.isIndexValid(i) || !this.isIndexValid(j)) {
       return;
     }
-    // this.setBackGroundColor(i,SortColor.GREENYELLOW);
-    // this.setBackGroundColor(j,SortColor.GREENYELLOW);
+    if (i === j) {
+      return;
+    }
+    this.setBackGroundColor(i,SortColor.YELLOW);
+    this.setBackGroundColor(j,SortColor.YELLOW);
     let right = Math.max(i, j);
     let left = Math.min(i, j);
     let length = right - left;
@@ -176,6 +227,13 @@ export abstract class SortAlgorithm {
   //   this.adjustDelay();
   // }
 
+  /**
+   * 设置div的背景颜色
+   * @param i 索引
+   * @param color 颜色
+   * @link SortColor
+   * @protected
+   */
   protected setBackGroundColor(i: number, color: SortColor) {
     let div = this.getDivByIndex(i);
     switch (color) {
@@ -195,6 +253,12 @@ export abstract class SortAlgorithm {
     }
   }
 
+  /**
+   * 判断div是否有某种颜色
+   * @param i 索引
+   * @param color 颜色
+   * @private
+   */
   private hasBackGroundColor(i: number, color: SortColor): boolean {
     let div = this.getDivByIndex(i);
     switch (color) {
@@ -328,10 +392,22 @@ export abstract class SortAlgorithm {
   //   this.timers.push(id);
   // }
 
+  /**
+   * 添加比较动画，将比较的两个元素的下标和count值放入animationQueue中
+   * @param i
+   * @param j
+   * @protected
+   */
   protected addCompareAnimation(i: number, j: number) {
     this.animationQueue.push({type: 'compare', i: i, j: j, count: this.count++});
   }
 
+  /**
+   * 添加交换动画，将交换的两个元素的下标和count值放入animationQueue中
+   * @param i
+   * @param j
+   * @protected
+   */
   protected addSwapAnimation(i: number, j: number) {
     this.animationQueue.push({type: 'swap', i: i, j: j, count: this.count++});
   }
@@ -344,6 +420,9 @@ export abstract class SortAlgorithm {
   //   this.timers.push(id);
   // }
 
+  /**
+   * 停止排序，将所有的div染回原来的颜色，清除定时器
+   */
   stopSort() {
     // for (let timer of this.timers) {
     //   clearTimeout(timer);
@@ -359,13 +438,20 @@ export abstract class SortAlgorithm {
     this.isEnd = true;
   }
 
+  /**
+   * 移除所有的背景颜色
+   */
   public removeBackGroundColor() {
     for (let i = 0; i < this.array.length; i++) {
       this.setBackGroundColor(i, SortColor.NONE);
     }
   }
 
-  // 这里的index是指的是animationQueue中的元素的下标
+  /**
+   * 播放比较动画，这里的index是指的是animationQueue中的元素的下标
+   * @param index
+   * @private
+   */
   private playCompareAnimation(index: number) {
     // 首先设置它的上一个type=compare的元素的颜色为none，然后设置它的颜色为yellow
     if (index > 0 && index < this.animationQueue.length) {
