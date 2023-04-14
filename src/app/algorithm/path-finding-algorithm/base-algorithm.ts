@@ -412,7 +412,7 @@ export abstract class BaseAlgorithm {
 
   ///////////////////////////////////////////重构///////////////////////////////////////////////////////////////////
   ChangeColorQueue: ChangeColor[] = [];
-  timer: number = 0;
+  timer: number | undefined;
   isEnd:boolean = false;
   protected addChangeColorQueue(row: number, col: number, color: Color): void{
     this.ChangeColorQueue.push({row, col, color});
@@ -458,7 +458,9 @@ export abstract class BaseAlgorithm {
   }
 
   public stopVisual():void {
-    clearTimeout(this.timer);
+    if(this.timer) {
+      clearTimeout(this.timer);
+    }
     this.isEnd = true;
   }
   /**

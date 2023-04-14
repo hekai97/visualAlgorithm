@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, DoCheck, OnInit} from '@angular/core';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {BaseAlgorithm} from '../algorithm/path-finding-algorithm/base-algorithm';
 import {AStar} from "../algorithm/path-finding-algorithm/a-star";
@@ -13,8 +13,12 @@ import {BaseMazeAlgorithm} from "../algorithm/maze-algorithm/base-maze-algorithm
   templateUrl: './path-finding.component.html',
   styleUrls: ['./path-finding.component.css'],
 })
-export class PathFindingComponent implements OnInit {
+export class PathFindingComponent implements OnInit,DoCheck {
   constructor(private _snackBar: MatSnackBar) {
+  }
+
+  ngDoCheck(): void {
+    this.isRunning = (this.pathFindingAlgorithm != null && !this.pathFindingAlgorithm.isEnd) || (this.mazeAlgorithm != null && !this.mazeAlgorithm.isEnd);
   }
 
   ngOnInit(): void {
@@ -36,6 +40,8 @@ export class PathFindingComponent implements OnInit {
   isMouseDown = false;
 
   isWeighted :boolean = false;
+
+  isRunning = false;
   pathFindingAlgorithms = [
     {name: 'A*', value: 'aStar'},
     {name: 'Dijkstra', value: 'dijkstra'},
@@ -55,11 +61,9 @@ export class PathFindingComponent implements OnInit {
   selectedMazeAlgorithm = 'none';
 
   generateMaze(): void {
-    if(this.mazeAlgorithm){
-      this.mazeAlgorithm.stopVisual();
-      this.mazeAlgorithm = null;
-    }
-    this.createBoard();
+    this.clearMazeAlgorithm();
+    this.clearWall();
+    this.clearBoardColor();
     this.createStartNode(this.startRow, this.startCol);
     this.createEndNode(this.endRow, this.endCol);
     switch (this.selectedMazeAlgorithm) {
@@ -173,6 +177,8 @@ export class PathFindingComponent implements OnInit {
     this.createBoard();
     this.createStartNode(this.startRow, this.startCol);
     this.createEndNode(this.endRow, this.endCol);
+    this.clearPathFindingAlgorithm();
+    this.clearMazeAlgorithm();
   }
 
   createStartNode(x: number, y: number) {
@@ -191,6 +197,7 @@ export class PathFindingComponent implements OnInit {
   }
 
   visualStart():void {
+    this.clearBoardColor();
     if(this.selectedPathFindingAlgorithm == 'aStar'){
       this.pathFindingAlgorithm = new AStar(this.rows, this.cols, this.startRow-1, this.startCol-1, this.endRow-1, this.endCol-1, this.speed);
     }
@@ -233,8 +240,10 @@ export class PathFindingComponent implements OnInit {
       for(let i=0;i<this.rows;i++){
         for(let j=0;j<this.cols;j++){
           let temp = document.querySelector(`div[row="${i}"][col="${j}"]`);
-          temp!.removeAttribute('weight');
-          temp!.innerHTML = '';
+          if(!(i==this.startRow-1&&j==this.startCol-1)&&!(i==this.endRow-1&&j==this.endCol-1)) {
+            temp!.removeAttribute('weight');
+            temp!.innerHTML = '';
+          }
         }
       }
     }
@@ -250,15 +259,76 @@ export class PathFindingComponent implements OnInit {
   }
 
   algorithmChange() {
+    this.clearWeight();
+    this.clearPathFindingAlgorithm();
+    // this.clearMazeAlgorithm();
+    this.clearBoardColor();
+  }
+
+  clearPathFindingAlgorithm() {
     if(this.pathFindingAlgorithm){
-      this.reset();
       this.pathFindingAlgorithm!.stopVisual();
       this.pathFindingAlgorithm = null;
     }
+  }
+
+  clearMazeAlgorithm() {
     if(this.mazeAlgorithm){
-      this.reset();
       this.mazeAlgorithm!.stopVisual();
       this.mazeAlgorithm = null;
+    }
+  }
+
+
+  clearBoardColor() {
+    const container = document.querySelector('.container');
+    const nodes = container!.querySelectorAll('div');
+    for (let i = 0; i < nodes.length; i++) {
+      if(!this.isStartOrEndNode(nodes[i])&&!nodes[i].classList.contains('wall')){
+        nodes[i].setAttribute('class', 'before_start_node');
+        if(!this.isWeighted){
+          nodes[i].innerHTML = '';
+        }
+      }
+      nodes[i].setAttribute('parent', 'null');
+      nodes[i].removeAttribute('visited');
+      if(!this.isStartOrEndNode(nodes[i])) {
+        nodes[i].removeAttribute('cost');
+      }
+    }
+  }
+
+  clearWall() {
+    const container = document.querySelector('.container');
+    const nodes = container!.querySelectorAll('div');
+    for (let i = 0; i < nodes.length; i++) {
+      if(nodes[i].classList.contains('wall')){
+        nodes[i].setAttribute('class', 'before_start_node');
+        nodes[i].setAttribute('wall', 'false');
+        nodes[i].innerHTML = '';
+        if(nodes[i].getAttribute('weight')!=null){
+          nodes[i].innerHTML = nodes[i].getAttribute('weight')!;
+        }
+      }
+    }
+  }
+
+  isStartOrEndNode(div:HTMLElement) {
+    return div.classList.contains('ends');
+
+  }
+
+  private clearWeight() {
+    if(this.selectedPathFindingAlgorithm!='dijkstra'){
+      this.isWeighted = false;
+      const container = document.querySelector('.container');
+      const nodes = container!.querySelectorAll('div');
+      for (let i = 0; i < nodes.length; i++) {
+        if(!this.isStartOrEndNode(nodes[i])){
+          nodes[i].removeAttribute('weight');
+          nodes[i].innerHTML = '';
+        }
+      }
     }
   }
 }

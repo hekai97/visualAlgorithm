@@ -8,7 +8,7 @@
   </button>
   <mat-form-field appearance="outline">
     <mat-label>选择一个算法</mat-label>
-    <mat-select [(value)]="selectedPathFindingAlgorithm" (selectionChange)="algorithmChange()">
+    <mat-select [(value)]="selectedPathFindingAlgorithm" (selectionChange)="algorithmChange()" [disabled]="isRunning">
       <mat-option *ngFor="let a of pathFindingAlgorithms" [value]="a.value">{{
         a.name
         }}</mat-option>
@@ -17,7 +17,7 @@
 
   <mat-form-field *ngIf="selectedPathFindingAlgorithm=='dijkstra'" appearance="outline">
     <mat-label>是否设置权值</mat-label>
-    <mat-select [(value)]="this.isWeighted" (valueChange)="changeNodeWeight()">
+    <mat-select [(value)]="this.isWeighted" (valueChange)="changeNodeWeight()" [disabled]="isRunning">
       <mat-option [value]="true">是</mat-option>
       <mat-option [value]="false">否</mat-option>
     </mat-select>
@@ -25,7 +25,7 @@
 
   <mat-form-field appearance="outline">
     <mat-label>选择一个迷宫算法</mat-label>
-    <mat-select [(value)]="selectedMazeAlgorithm" (selectionChange)="generateMaze()">
+    <mat-select [(value)]="selectedMazeAlgorithm" (selectionChange)="generateMaze()" [disabled]="isRunning">
       <mat-option
         *ngFor="let m of mazeAlgorithms"
         [value]="m.value"
@@ -63,8 +63,8 @@
 
   <div
     class="container"
-    (mousedown)="onMouseDown($event)"
-    (mouseup)="onMouseUp($event)"
-    (mouseover)="setWallAttribute($event)"
+    (mousedown)="isRunning || onMouseDown($event)"
+    (mouseup)="isRunning||onMouseUp($event)"
+    (mouseover)="isRunning||setWallAttribute($event)"
   ></div>
 </div>

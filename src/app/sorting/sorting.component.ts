@@ -306,11 +306,7 @@ export class SortingComponent implements OnInit {
 
   replay() {
     // 首先，停止所有的动画，然后，重新生成数据
-    if(this.sortAlgorithm){
-      this.sortAlgorithm.stopSort();
-      this.sortAlgorithm.removeBackGroundColor();
-    }
-    this.sortAlgorithm = null;
+    this.stop();
     this.randomArray();
     this.resetTime();
   }
@@ -340,5 +336,16 @@ export class SortingComponent implements OnInit {
     this.costMinute = 0;
     this.costSecond = 0;
     this.costMillisecond = 0;
+  }
+
+  stop() {
+    if(this.sortAlgorithm){
+      this.sortAlgorithm.stopSort();
+      this.sortAlgorithm.removeBackGroundColor();
+    }
+    this.sortAlgorithm = null;
+  }
+  TabChanged(index: number) {
+    this.stop();
   }
 }
