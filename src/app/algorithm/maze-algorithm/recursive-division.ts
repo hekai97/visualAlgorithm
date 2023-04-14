@@ -1,6 +1,7 @@
 import {BaseAlgorithm} from "../path-finding-algorithm/base-algorithm";
+import {BaseMazeAlgorithm} from "./base-maze-algorithm";
 
-export class RecursiveDivision extends BaseAlgorithm{
+export class RecursiveDivision extends BaseMazeAlgorithm{
   constructor(rows:number,cols:number,startRow: number, startCol: number, endRow: number, endCol: number,speed:number) {
     super(rows, cols, startRow, startCol, endRow, endCol, speed);
   }
@@ -20,7 +21,8 @@ export class RecursiveDivision extends BaseAlgorithm{
     for (let i = 0; i < this.rows; i++) {
       for (let j = 0; j < this.cols; j++) {
         if(i==0 || i==this.rows-1 || j==0 || j==this.cols-1){
-          this.setWallWithIndex(i,j,true);
+          // this.setWallWithIndex(i,j,true);
+          this.walls[i][j] = true;
         }
       }
     }
@@ -35,10 +37,12 @@ export class RecursiveDivision extends BaseAlgorithm{
     let point = this.randomPoint(x1,x2,y1,y2);
     // 由该点开始，向上下左右开始填充墙
     for (let i = x1; i <= x2; i++) {
-      this.setWallWithIndex(i,point[1],true);
+      // this.setWallWithIndex(i,point[1],true);
+      this.walls[i][point[1]] = true;
     }
     for (let i = y1; i <= y2; i++) {
-      this.setWallWithIndex(point[0],i,true);
+      // this.setWallWithIndex(point[0],i,true);
+      this.walls[point[0]][i] = true;
     }
     // 选择随机的三堵墙，将其打通
     this.randomBreakWalls(point[0],point[1],x1,x2,y1,y2);
@@ -71,22 +75,26 @@ export class RecursiveDivision extends BaseAlgorithm{
       case 0:
         // 上
         let randomX = this.getRandomInt(pointX,x1);
-        this.setWallWithIndex(randomX,pointY,false);
+        // this.setWallWithIndex(randomX,pointY,false);
+        this.walls[randomX][pointY] = false;
         break;
       case 1:
         // 右
         let randomY = this.getRandomInt(pointY,y2);
-        this.setWallWithIndex(pointX,randomY,false);
+        // this.setWallWithIndex(pointX,randomY,false);
+        this.walls[pointX][randomY] = false;
         break;
       case 2:
         // 下
         let randomX2 = this.getRandomInt(pointX,x2);
-        this.setWallWithIndex(randomX2,pointY,false);
+        // this.setWallWithIndex(randomX2,pointY,false);
+        this.walls[randomX2][pointY] = false;
         break;
       case 3:
         // 左
         let randomY2 = this.getRandomInt(pointY,y1);
-        this.setWallWithIndex(pointX,randomY2,false);
+        // this.setWallWithIndex(pointX,randomY2,false);
+        this.walls[pointX][randomY2] = false;
         break;
       default:
         break;

@@ -1,6 +1,7 @@
-import {BaseAlgorithm, Color} from "../path-finding-algorithm/base-algorithm";
+import {Color} from "../path-finding-algorithm/base-algorithm";
+import {BaseMazeAlgorithm} from "./base-maze-algorithm";
 
-export class RandomizedDepthFirstSearch extends BaseAlgorithm{
+export class RandomizedDepthFirstSearch extends BaseMazeAlgorithm{
 
   constructor(rows:number,cols:number,startRow: number, startCol: number, endRow: number, endCol: number,speed:number) {
     super(rows, cols, startRow, startCol, endRow, endCol, speed);
@@ -21,10 +22,12 @@ export class RandomizedDepthFirstSearch extends BaseAlgorithm{
    *  不过需要注意的是，格子之间是有重叠部分的，类似于滑动
    */
   start(): void {
-    // 首先，将所有的都标记为墙
+    // let wallMap = [];
+    // // 首先，将所有的都标记为墙
     for (let i = 0; i < this.rows; i++) {
       for (let j = 0; j < this.cols; j++) {
-        this.setWallWithIndex(i, j, true);
+        // this.setWallWithIndex(i, j, true);
+        this.walls[i][j] = true;
       }
     }
     // 然后，将路径放出来
@@ -77,8 +80,12 @@ export class RandomizedDepthFirstSearch extends BaseAlgorithm{
         // this.changeDivColorWithIndexDelay(x,y,Color.RED,this.speed);
         // this.setWallWithIndex(randomNeighborX,randomNeighborY,false);
         // this.setWallWithIndex(x,y,false);
-        this.setWallWithIndexDelay(randomNeighborX,randomNeighborY,false,this.speed);
-        this.setWallWithIndexDelay(x,y,false,this.speed);
+
+        // this.setWallWithIndexDelay(randomNeighborX,randomNeighborY,false,this.speed);
+        // this.setWallWithIndexDelay(x,y,false,this.speed);
+        this.walls[randomNeighborX][randomNeighborY] = false;
+        this.walls[x][y] = false;
+
         stack.push([randomNeighborX,randomNeighborY]);
         // visited[randomNeighborX][randomNeighborY] = true;
         this.setVisitedWithIndex(randomNeighborX,randomNeighborY,true);
@@ -107,5 +114,4 @@ export class RandomizedDepthFirstSearch extends BaseAlgorithm{
     }
     return neighbors;
   }
-
 }

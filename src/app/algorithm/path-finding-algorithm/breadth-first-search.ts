@@ -46,7 +46,9 @@ export class BreadthFirstSearch extends BaseAlgorithm{
       // 延迟染色
       if(!(this.isStartNode(current)||this.isEndNode(current))){
         // this.changeColor(current,this.speed,time);
-        this.changeDivColorWithNodeDelay(current,Color.RED, this.speed);
+
+        // this.changeDivColorWithNodeDelay(current,Color.RED, this.speed);
+        this.addChangeColorQueue(index[0],index[1],Color.RED);
       }
       // else{
       //   this.changeColor(current,this.speed,time);
@@ -73,7 +75,8 @@ export class BreadthFirstSearch extends BaseAlgorithm{
     }
     if(found) {
       // this.findBestPath(time);
-      this.drawBestPath();
+      return;
+      // this.drawBestPath();
     }
   }
 

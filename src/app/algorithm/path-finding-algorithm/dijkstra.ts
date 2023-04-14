@@ -15,11 +15,12 @@ export class Dijkstra extends BaseAlgorithm{
       let [row, col] = pq.extractMin()!;
       if (this.isEndPoint(row, col)) {
         console.log('找到了');
-        this.drawBestPath();
+        // this.drawBestPath();
         return;
       }
       this.setVisitedWithIndex(row, col, true);
-      this.changeDivColorWithIndexDelay(row, col, Color.RED, this.speed);
+      // this.changeDivColorWithIndexDelay(row, col, Color.RED, this.speed);
+      this.addChangeColorQueue(row,col,Color.RED);
       for (let i = 0; i < 4; i++) {
         let newRow = row + direction[i][0];
         let newCol = col + direction[i][1];

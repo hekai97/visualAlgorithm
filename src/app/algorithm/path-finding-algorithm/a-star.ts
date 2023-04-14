@@ -32,11 +32,14 @@ export class AStar extends BaseAlgorithm {
       let div = openSet.extractMin()!;
       if (this.isEndNode(div)) {
         console.log('找到了');
-        this.drawBestPath();
+        // this.drawBestPath();
         return;
       }
       this.setVisitedWithNode(div, true);
-      this.changeDivColorWithNodeDelay(div, Color.RED, this.speed);
+      // this.changeDivColorWithNodeDelay(div, Color.RED, this.speed);
+      let point = this.getNodeIndex(div);
+      this.addChangeColorQueue(point[0], point[1], Color.RED);
+
       for (let i = 0; i < 4; i++) {
         let newRow = parseInt(div.getAttribute('row')!) + direction[i][0];
         let newCol = parseInt(div.getAttribute('col')!) + direction[i][1];

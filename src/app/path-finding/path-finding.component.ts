@@ -8,6 +8,7 @@ import {Dijkstra} from "../algorithm/path-finding-algorithm/dijkstra";
 import {RandomizedDepthFirstSearch} from "../algorithm/maze-algorithm/randomized-depth-first-search";
 import {SimpleStairMaze} from "../algorithm/maze-algorithm/simple-stair-maze";
 import {RecursiveDivision} from "../algorithm/maze-algorithm/recursive-division";
+import {BaseMazeAlgorithm} from "../algorithm/maze-algorithm/base-maze-algorithm";
 @Component({
   templateUrl: './path-finding.component.html',
   styleUrls: ['./path-finding.component.css'],
@@ -22,7 +23,8 @@ export class PathFindingComponent implements OnInit {
     this.createStartNode(this.startRow, this.startCol);
     this.createEndNode(this.endRow, this.endCol);
   }
-  private algorithm: BaseAlgorithm | undefined;
+  pathFindingAlgorithm: BaseAlgorithm | null= null;
+  mazeAlgorithm: BaseMazeAlgorithm | null = null;
   // 默认地图大小
   rows = 20;
   cols = 40;
@@ -53,22 +55,27 @@ export class PathFindingComponent implements OnInit {
   selectedMazeAlgorithm = 'none';
 
   generateMaze(): void {
+    if(this.mazeAlgorithm){
+      this.mazeAlgorithm.stopVisual();
+      this.mazeAlgorithm = null;
+    }
+    this.createBoard();
+    this.createStartNode(this.startRow, this.startCol);
+    this.createEndNode(this.endRow, this.endCol);
     switch (this.selectedMazeAlgorithm) {
       case 'randomizedDepthFirstSearch':
-        let maze = new RandomizedDepthFirstSearch(this.rows, this.cols,this.startRow-1,this.startCol-1,this.endRow-1,this.endCol-1,this.speed);
-        maze.start();
+        this.mazeAlgorithm = new RandomizedDepthFirstSearch(this.rows, this.cols,this.startRow-1,this.startCol-1,this.endRow-1,this.endCol-1,this.speed);
         break;
       case 'simpleStairMaze':
-        let maze2 = new SimpleStairMaze(this.rows, this.cols,this.startRow-1,this.startCol-1,this.endRow-1,this.endCol-1,this.speed);
-        maze2.start();
+        this.mazeAlgorithm = new SimpleStairMaze(this.rows, this.cols,this.startRow-1,this.startCol-1,this.endRow-1,this.endCol-1,this.speed);
         break;
       case 'recursiveDivision':
-        let maze3 = new RecursiveDivision(this.rows, this.cols,this.startRow-1,this.startCol-1,this.endRow-1,this.endCol-1,this.speed);
-        maze3.start();
+        this.mazeAlgorithm = new RecursiveDivision(this.rows, this.cols,this.startRow-1,this.startCol-1,this.endRow-1,this.endCol-1,this.speed);
         break;
       default:
         break;
     }
+    this.mazeAlgorithm?.startVisual();
   }
 
   createBoard(): void {
@@ -184,25 +191,24 @@ export class PathFindingComponent implements OnInit {
   }
 
   visualStart():void {
-    if(this.speed==0)this.speed=1;
     if(this.selectedPathFindingAlgorithm == 'aStar'){
-      this.algorithm = new AStar(this.rows, this.cols, this.startRow-1, this.startCol-1, this.endRow-1, this.endCol-1, this.speed);
+      this.pathFindingAlgorithm = new AStar(this.rows, this.cols, this.startRow-1, this.startCol-1, this.endRow-1, this.endCol-1, this.speed);
     }
     else if(this.selectedPathFindingAlgorithm == 'dijkstra'){
       if(this.isWeighted){
-        this.algorithm = new Dijkstra(this.rows, this.cols, this.startRow-1, this.startCol-1, this.endRow-1, this.endCol-1, this.speed);
+        this.pathFindingAlgorithm = new Dijkstra(this.rows, this.cols, this.startRow-1, this.startCol-1, this.endRow-1, this.endCol-1, this.speed);
       }
       else{
-        this.algorithm = new BreadthFirstSearch(this.rows, this.cols, this.startRow-1, this.startCol-1, this.endRow-1, this.endCol-1, this.speed)
+        this.pathFindingAlgorithm = new BreadthFirstSearch(this.rows, this.cols, this.startRow-1, this.startCol-1, this.endRow-1, this.endCol-1, this.speed)
       }
     }else if(this.selectedPathFindingAlgorithm == 'bfs'){
-      this.algorithm = new BreadthFirstSearch(this.rows, this.cols, this.startRow-1, this.startCol-1, this.endRow-1, this.endCol-1, this.speed);
+      this.pathFindingAlgorithm = new BreadthFirstSearch(this.rows, this.cols, this.startRow-1, this.startCol-1, this.endRow-1, this.endCol-1, this.speed);
     }
     else if(this.selectedPathFindingAlgorithm == 'dfs'){
       console.log('dfs');
-      this.algorithm = new DepthFirstSearch(this.rows, this.cols, this.startRow-1, this.startCol-1, this.endRow-1, this.endCol-1, this.speed);
+      this.pathFindingAlgorithm = new DepthFirstSearch(this.rows, this.cols, this.startRow-1, this.startCol-1, this.endRow-1, this.endCol-1, this.speed);
     }
-    this.algorithm!.start();
+    this.pathFindingAlgorithm!.startVisual();
   }
   // 用于给图设置权值
   changeNodeWeight() {
@@ -235,8 +241,24 @@ export class PathFindingComponent implements OnInit {
   }
 
   changeSpeedDynamically() {
-    if(this.algorithm!=null){
-      this.algorithm!.speed = this.speed;
+    if(this.pathFindingAlgorithm!=null){
+      this.pathFindingAlgorithm!.speed = this.speed;
+    }
+    if(this.mazeAlgorithm!=null){
+      this.mazeAlgorithm!.speed = this.speed;
+    }
+  }
+
+  algorithmChange() {
+    if(this.pathFindingAlgorithm){
+      this.reset();
+      this.pathFindingAlgorithm!.stopVisual();
+      this.pathFindingAlgorithm = null;
+    }
+    if(this.mazeAlgorithm){
+      this.reset();
+      this.mazeAlgorithm!.stopVisual();
+      this.mazeAlgorithm = null;
     }
   }
 }

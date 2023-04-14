@@ -9,7 +9,7 @@ export class DepthFirstSearch extends BaseAlgorithm{
     if(res){
       console.log('找到了');
       // drawBestPath(this.endRow,this.endCol,this.speed);
-      this.drawBestPath();
+      // this.drawBestPath();
     }
   }
   constructor(rows:number,cols:number,startRow: number, startCol: number, endRow: number, endCol: number,speed:number) {
@@ -40,7 +40,10 @@ export class DepthFirstSearch extends BaseAlgorithm{
         this.setVisitedWithIndex(newRow,newCol,true);
         // this.changeColor(newRow,newCol,time);
         // time+=100/this.speed;
-        this.changeDivColorWithIndexDelay(newRow,newCol,Color.RED, this.speed);
+
+        // this.changeDivColorWithIndexDelay(newRow,newCol,Color.RED, this.speed);
+        this.addChangeColorQueue(newRow,newCol,Color.RED);
+
         let res = this.startAlgorithm(newRow, newCol,this.getIndexNode(startRow,startCol)!);
         if(res){
           return true;

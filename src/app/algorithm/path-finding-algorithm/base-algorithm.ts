@@ -146,6 +146,11 @@ export abstract class BaseAlgorithm {
       } else if (color === Color.GREEN) {
         node.setAttribute('class', 'Path_green');
       }
+      if(node!.getAttribute('weight')!==null){
+        node!.innerHTML = node!.getAttribute('weight')!+'|'+node!.getAttribute('cost')!;
+      }else {
+        node!.innerHTML = node!.getAttribute('cost')!;
+      }
     }
   }
 
@@ -404,6 +409,66 @@ export abstract class BaseAlgorithm {
     // console.log(row, col,'此时的行列,总行列为',this.rows,this.cols);
     return row >= 0 && row < this.rows && col >= 0 && col < this.cols;
   }
+
+  ///////////////////////////////////////////重构///////////////////////////////////////////////////////////////////
+  ChangeColorQueue: ChangeColor[] = [];
+  timer: number = 0;
+  isEnd:boolean = false;
+  protected addChangeColorQueue(row: number, col: number, color: Color): void{
+    this.ChangeColorQueue.push({row, col, color});
+  }
+
+  private findPathNodeAddToQueue() {
+    let current = this.getIndexNode(this.endRow, this.endCol);
+    while (current&&current !== this.getIndexNode(this.startRow, this.startCol)) {
+      // current.removeAttribute('Path_red');
+      // 将路线染成绿色，但是终点不染色
+      if (current !== this.getIndexNode(this.endRow, this.endCol)) {
+        this.addChangeColorQueue(parseInt(current!.getAttribute('row')!), parseInt(current!.getAttribute('col')!), Color.GREEN);
+      }
+      // current.setAttribute('class','Path_green');
+      const parent = current!.getAttribute('parent')!.split('|');
+      current = this.getIndexNode(parseInt(parent[0]), parseInt(parent[1]))!;
+    }
+  }
+
+
+  // TODO 需要在这里更改div颜色的时候将cost值也更改
+  private playAnimation(): void{
+    let changeColor = this.ChangeColorQueue.shift();
+    if(changeColor){
+      this.changeDivColorWithIndex(changeColor.row, changeColor.col, changeColor.color);
+    }else{
+      this.isEnd = true;
+    }
+    this.timer = setTimeout(()=>{
+      this.playAnimation();
+    },this.getCalculateSpeed());
+  }
+
+  protected getCalculateSpeed() {
+    // return 1000 - 9 * this.speed;
+    return 1000/this.speed;
+  }
+
+  public startVisual():void {
+    this.start();
+    this.findPathNodeAddToQueue();
+    this.playAnimation();
+  }
+
+  public stopVisual():void {
+    clearTimeout(this.timer);
+    this.isEnd = true;
+  }
+  /**
+   * 更改思路，将所有需要染色的都放在一个队列中，统一处理*/
+}
+
+interface ChangeColor {
+  row: number;
+  col: number;
+  color:Color;
 }
 
 export enum Color {
