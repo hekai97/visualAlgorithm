@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { PathFindingComponent } from './path-finding/path-finding.component';
 import { IndexComponent } from './index/index.component';
 import {SortingComponent} from "./sorting/sorting.component";
+import {TreeComponent} from "./tree/tree.component";
 
 const routes: Routes = [
   {
@@ -16,6 +17,10 @@ const routes: Routes = [
   {
     path: 'sorting',
     component: SortingComponent,
+  },
+  {
+    path: 'tree',
+    component:TreeComponent,
   }
 ];
 

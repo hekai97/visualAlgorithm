@@ -19,9 +19,10 @@ import {MatIconModule} from "@angular/material/icon";
 import {MatGridListModule} from "@angular/material/grid-list";
 import { SortingComponent } from './sorting/sorting.component';
 import {MatTabsModule} from "@angular/material/tabs";
+import { TreeComponent } from './tree/tree.component';
 
 @NgModule({
-  declarations: [AppComponent, PathFindingComponent, IndexComponent, SortingComponent],
+  declarations: [AppComponent, PathFindingComponent, IndexComponent, SortingComponent, TreeComponent],
     imports: [
         BrowserModule,
         AppRoutingModule,
