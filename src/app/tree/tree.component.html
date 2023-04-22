@@ -30,11 +30,23 @@
           </mat-form-field>
           <button mat-raised-button color="primary" (click)="searchBinarySearchTreeNode()">搜索节点</button>
         </div>
+        <div class="input-with-button">
+          <button mat-raised-button color="primary" (click)="preOrderTraversal()">先序遍历</button>
+          <button mat-raised-button color="primary">中序遍历</button>
+        </div>
+
+
+        速度：
+        <mat-slider style="margin-top: 20px;width: 20%" min="1" max="100" step="1"
+                    discrete >
+          <input matSliderThumb [(value)]="speed">
+        </mat-slider>
       </div>
     </mat-tab>
     <mat-tab label="{{treeTabs[1].tab}}">
 
     </mat-tab>
   </mat-tab-group>
+  <div class="output-area">{{outputString}}</div>
   <div id="container" style="border: 1px black solid;border-radius: 10px"></div>
 </div>

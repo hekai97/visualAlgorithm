@@ -20,6 +20,7 @@ export class TreeComponent implements OnInit{
   }
   ngOnInit(): void {
     this.initGraph();
+    this.generateBinarySearchTree();
   }
   binarySearchTree?:BinaryTree;
   binarySearchTreeData?:BinaryTreeData;
@@ -32,6 +33,12 @@ export class TreeComponent implements OnInit{
   waitDeleteBinarySearchTreeNodeValue?: number;
   waitSearchBinarySearchTreeNodeValue?: number;
   animationQueue:AnimationQueue[][] = [];
+  // 用来存放遍历的结果，展示在页面上,由于需要定时更新，所以该值将由outputNumbers来更新
+  outputString?:string;
+  // 用来存放遍历的结果
+  outputNumbers:number[] = [];
+
+  speed:number = 100;
   private initGraph() {
     G6.registerEdge(
       'circle-running',
@@ -329,6 +336,7 @@ export class TreeComponent implements OnInit{
     this.graph?.getEdges().forEach((edge)=>{
       edge.update({type:'cubic-vertical'});
     });
+    this.outputString = undefined;
   }
   private searchBinarySearchTreeNodeHelper(binarySearchTreeData: BinaryTreeData, waitSearchBinarySearchTreeNodeValue: number) {
     // 变色
@@ -347,8 +355,8 @@ export class TreeComponent implements OnInit{
     //   }
     // }
     if(parseInt(binarySearchTreeData.id)==waitSearchBinarySearchTreeNodeValue) {
-      this.addToAnimationQueue(binarySearchTreeData.id);
-      this.animationQueue.push([{type:'node',value:binarySearchTreeData.id,operation:"search",color:'green'}]);
+      this.addToAnimationQueue(binarySearchTreeData.id,"green");
+      // this.animationQueue.push([{type:'node',value:binarySearchTreeData.id,operation:"search",color:'green'}]);
       return;
     }
     if(binarySearchTreeData.children.length==0){
@@ -369,7 +377,7 @@ export class TreeComponent implements OnInit{
     }
   }
 
-  private addToAnimationQueue(value:string) {
+  private addToAnimationQueue(value:string,color: 'red' | 'green' | 'blue'= 'red') {
     if(this.animationQueue.length>0){
       let temp:string;
       let lastNode = this.animationQueue[this.animationQueue.length-1];
@@ -378,9 +386,9 @@ export class TreeComponent implements OnInit{
       }
       // 首先，给上个节点添加一个边，代表是从上个点到这个点的边，然后，把当前这个点放进去
       this.animationQueue[this.animationQueue.length-1].push({type:'edge',value: temp!+':'+value,operation:"search"});
-      this.animationQueue.push([{type:'node',value:value,operation:"search",color:'red'}]);
+      this.animationQueue.push([{type:'node',value:value,operation:"search",color:color}]);
     }else{
-      this.animationQueue.push([{type:'node',value:value,operation:"search",color:'red'}]);
+      this.animationQueue.push([{type:'node',value:value,operation:"search",color:color}]);
     }
   }
 
@@ -410,6 +418,9 @@ export class TreeComponent implements OnInit{
   }
   timer?: number;
 
+  private getCalculateSpeed() {
+    return 1000/this.speed;
+  }
   private playSearchBinarySearchTreeNodeAnimation() {
     // this.timer = setInterval(()=>{
     //   if(this.animationQueue.length>1){
@@ -427,21 +438,99 @@ export class TreeComponent implements OnInit{
     //     clearInterval(this.timer);
     //   }
     // },1000);
-    this.timer = setInterval(()=>{
-      if(this.animationQueue.length>0){
-        const animation = this.animationQueue.shift();
-        if(animation){
-          animation.forEach((item)=>{
-            if(item.type=='node'){
-              this.graph?.update(item.value,{style:{fill:item.color}});
-            }else if(item.type=='edge'){
-              this.graph?.findById(item.value).update({type:'circle-running'});
-            }
-          })
-        }
-      }else{
-        clearInterval(this.timer);
+    if(this.animationQueue.length>0){
+      const animation = this.animationQueue.shift();
+      if(animation){
+        animation.forEach((item)=>{
+          if(item.type=='node'){
+            this.graph?.update(item.value,{style:{fill:item.color}});
+          }else if(item.type=='edge'){
+            this.graph?.findById(item.value)?.update({type:'circle-running'});
+          }
+        })
       }
-    },1000);
+    }else{
+      clearInterval(this.timer);
+    }
+    this.timer = setTimeout(()=>{
+      this.playSearchBinarySearchTreeNodeAnimation();
+    },this.getCalculateSpeed());
   }
+
+  timer2?: number;
+  private playTraverseSearchTreeNodeAnimation() {
+    if(this.animationQueue.length>0){
+      const animation = this.animationQueue.shift();
+      if(animation){
+        animation.forEach((item)=>{
+          if(item.type=='node'){
+            console.log('此时的item.value是',item.value,'outputNumbers[0]=',this.outputNumbers[0]);
+            this.graph?.update(item.value,{style:{fill:item.color}});
+            if(parseInt(item.value)==this.outputNumbers[0]){
+              const number = this.outputNumbers.shift();
+              if(number) {
+                if (this.outputString) {
+                  this.outputString = this.outputString + ',' + number.toString();
+                } else {
+                  this.outputString = number.toString();
+                }
+              }
+            }
+          }else if(item.type=='edge'){
+            this.graph?.findById(item.value)?.update({type:'circle-running'});
+          }
+        })
+      }
+    }else{
+      clearInterval(this.timer2);
+    }
+    this.timer2 = setTimeout(()=>{
+      this.playTraverseSearchTreeNodeAnimation();
+    },this.getCalculateSpeed());
+  }
+
+  // 先序遍历
+  preOrderTraversal() {
+    if(this.binarySearchTreeData){
+      this.clearNodeColorAndEdgeStatus();
+      this.animationQueue = [];
+      this.outputString = undefined;
+      this.outputNumbers = [];
+      this.preOrderTraversalHelper(this.binarySearchTreeData);
+      this.playTraverseSearchTreeNodeAnimation();
+      // this.outputNumberToStringAndOutput();
+      console.log(this.outputString);
+    }
+  }
+
+  private preOrderTraversalHelper(binarySearchTreeData: BinaryTreeData) {
+    this.addToAnimationQueue(binarySearchTreeData.id);
+    this.outputNumbers.push(parseInt(binarySearchTreeData.id));
+    if(binarySearchTreeData.children.length==1){
+      this.preOrderTraversalHelper(binarySearchTreeData.children[0]);
+    }else if(binarySearchTreeData.children.length==2){
+      this.preOrderTraversalHelper(binarySearchTreeData.children[0]);
+      this.preOrderTraversalHelper(binarySearchTreeData.children[1]);
+    }
+    this.addToAnimationQueue(binarySearchTreeData.id,"green");
+  }
+
+  // timer2?: number;
+  // private outputNumberToStringAndOutput() {
+  //   if(this.outputNumbers){
+  //     const number = this.outputNumbers.shift();
+  //     if(number){
+  //       if(this.outputString){
+  //         this.outputString = this.outputString + ',' + number.toString();
+  //       }else{
+  //         this.outputString = number.toString();
+  //       }
+  //     }
+  //   }else{
+  //     clearInterval(this.timer2);
+  //   }
+  //   this.timer2 = setTimeout(()=>{
+  //     this.outputNumberToStringAndOutput();
+  //   },this.getCalculateSpeed());
+  // }
 }
