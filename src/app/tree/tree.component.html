@@ -31,8 +31,8 @@
           <button mat-raised-button color="primary" (click)="searchBinarySearchTreeNode()">搜索节点</button>
         </div>
         <div class="input-with-button">
-          <button mat-raised-button color="primary" (click)="preOrderTraversal()">先序遍历</button>
-          <button mat-raised-button color="primary">中序遍历</button>
+          <button mat-raised-button color="primary" (click)="preOrderTraversal()" [disabled]="this.traverseTimer!=undefined">先序遍历</button>
+          <button mat-raised-button color="primary" (click)="inOrderTraversal()">中序遍历</button>
         </div>
 
 
