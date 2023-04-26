@@ -1,7 +1,7 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { PathFindingComponent } from './path-finding/path-finding.component';
-import { IndexComponent } from './index/index.component';
+import {NgModule} from '@angular/core';
+import {RouterModule, Routes} from '@angular/router';
+import {PathFindingComponent} from './path-finding/path-finding.component';
+import {IndexComponent} from './index/index.component';
 import {SortingComponent} from "./sorting/sorting.component";
 import {TreeComponent} from "./tree/tree.component";
 
@@ -20,7 +20,7 @@ const routes: Routes = [
   },
   {
     path: 'tree',
-    component:TreeComponent,
+    component: TreeComponent,
   }
 ];
 
@@ -28,4 +28,5 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
 })
-export class AppRoutingModule {}
+export class AppRoutingModule {
+}

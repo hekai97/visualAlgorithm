@@ -3,6 +3,7 @@
   background: #e0e5ec;
   /*efeff4*/
 }
+
 .container {
   display: grid;
   box-shadow: 3px 3px 4px #5a5c5e, -3px -3px 4px #ffffff;
@@ -57,9 +58,8 @@
   color: white;
   font-weight: bolder;
   text-align: center;
-  box-shadow:
-    3px 3px 4px #5A5C5E,
-    -3px -3px 4px #ffffff;
+  box-shadow: 3px 3px 4px #5A5C5E,
+  -3px -3px 4px #ffffff;
   border-radius: 5px;
   display: flex;
   justify-content: center;
@@ -72,9 +72,8 @@
   background: #00FF00;
   color: black;
   text-align: center;
-  box-shadow:
-    5px 5px 9px #5A5C5E,
-    -5px -5px 9px #ffffff;
+  box-shadow: 5px 5px 9px #5A5C5E,
+  -5px -5px 9px #ffffff;
   border-radius: 5px;
   display: flex;
   justify-content: center;
@@ -87,9 +86,8 @@
   background: #DC143C;
   color: white;
   text-align: center;
-  box-shadow:
-    3px 3px 4px #5A5C5E,
-    -3px -3px 4px #ffffff;
+  box-shadow: 3px 3px 4px #5A5C5E,
+  -3px -3px 4px #ffffff;
   border-radius: 5px;
   display: flex;
   justify-content: center;

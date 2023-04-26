@@ -1,9 +1,9 @@
 import {Color} from "../path-finding-algorithm/base-algorithm";
 import {BaseMazeAlgorithm} from "./base-maze-algorithm";
 
-export class RandomizedDepthFirstSearch extends BaseMazeAlgorithm{
+export class RandomizedDepthFirstSearch extends BaseMazeAlgorithm {
 
-  constructor(rows:number,cols:number,startRow: number, startCol: number, endRow: number, endCol: number,speed:number) {
+  constructor(rows: number, cols: number, startRow: number, startCol: number, endRow: number, endCol: number, speed: number) {
     super(rows, cols, startRow, startCol, endRow, endCol, speed);
   }
 
@@ -43,18 +43,18 @@ export class RandomizedDepthFirstSearch extends BaseMazeAlgorithm{
     //   }
     // }
     let stack = [];
-    stack.push([this.startRow,this.startCol]);
+    stack.push([this.startRow, this.startCol]);
     // visited[this.startRow][this.startCol] = true;
-    this.setVisitedWithIndex(this.startRow,this.startCol,true);
-    while(stack.length>0) {
+    this.setVisitedWithIndex(this.startRow, this.startCol, true);
+    while (stack.length > 0) {
       let currentPoint: any;
       currentPoint = stack.pop();
       let currentPointX = currentPoint[0];
       let currentPointY = currentPoint[1];
-      let neighbors = this.getNeighbors(currentPointX,currentPointY);
-      if(neighbors.length>0){
-        stack.push([currentPointX,currentPointY]);
-        let randomIndex = Math.floor(Math.random()*neighbors.length);
+      let neighbors = this.getNeighbors(currentPointX, currentPointY);
+      if (neighbors.length > 0) {
+        stack.push([currentPointX, currentPointY]);
+        let randomIndex = Math.floor(Math.random() * neighbors.length);
         let randomNeighbor = neighbors[randomIndex];
         let randomNeighborX = randomNeighbor[0];
         let randomNeighborY = randomNeighbor[1];
@@ -73,8 +73,8 @@ export class RandomizedDepthFirstSearch extends BaseMazeAlgorithm{
         // else if(randomIndex==3){
         //   this.getIndexNode(randomNeighborX,randomNeighborY-1)!.innerHTML = ">";
         // }
-        let x = (currentPointX+randomNeighborX)/2;
-        let y = (currentPointY+randomNeighborY)/2;
+        let x = (currentPointX + randomNeighborX) / 2;
+        let y = (currentPointY + randomNeighborY) / 2;
         // map[x][y] = 0;
         // this.changeDivColorWithIndexDelay(randomNeighborX,randomNeighborY,Color.RED,this.speed);
         // this.changeDivColorWithIndexDelay(x,y,Color.RED,this.speed);
@@ -86,31 +86,32 @@ export class RandomizedDepthFirstSearch extends BaseMazeAlgorithm{
         this.walls[randomNeighborX][randomNeighborY] = false;
         this.walls[x][y] = false;
 
-        stack.push([randomNeighborX,randomNeighborY]);
+        stack.push([randomNeighborX, randomNeighborY]);
         // visited[randomNeighborX][randomNeighborY] = true;
-        this.setVisitedWithIndex(randomNeighborX,randomNeighborY,true);
+        this.setVisitedWithIndex(randomNeighborX, randomNeighborY, true);
       }
     }
     // console.log(map);
-    for(let i=0;i<this.rows;i++){
-      for(let j=0;j<this.cols;j++){
-        this.setVisitedWithIndex(i,j,false);
+    for (let i = 0; i < this.rows; i++) {
+      for (let j = 0; j < this.cols; j++) {
+        this.setVisitedWithIndex(i, j, false);
       }
     }
   }
+
   private getNeighbors(currentPointX: number, currentPointY: number): any[] {
     let neighbors = [];
-    if(this.isIndexInRange(currentPointX-2,currentPointY) && !this.isVisitedWithIndex(currentPointX-2,currentPointY)){
-      neighbors.push([currentPointX-2,currentPointY]);
+    if (this.isIndexInRange(currentPointX - 2, currentPointY) && !this.isVisitedWithIndex(currentPointX - 2, currentPointY)) {
+      neighbors.push([currentPointX - 2, currentPointY]);
     }
-    if(this.isIndexInRange(currentPointX+2,currentPointY) && !this.isVisitedWithIndex(currentPointX+2,currentPointY)){
-      neighbors.push([currentPointX+2,currentPointY]);
+    if (this.isIndexInRange(currentPointX + 2, currentPointY) && !this.isVisitedWithIndex(currentPointX + 2, currentPointY)) {
+      neighbors.push([currentPointX + 2, currentPointY]);
     }
-    if(this.isIndexInRange(currentPointX,currentPointY-2) && !this.isVisitedWithIndex(currentPointX,currentPointY-2)){
-      neighbors.push([currentPointX,currentPointY-2]);
+    if (this.isIndexInRange(currentPointX, currentPointY - 2) && !this.isVisitedWithIndex(currentPointX, currentPointY - 2)) {
+      neighbors.push([currentPointX, currentPointY - 2]);
     }
-    if(this.isIndexInRange(currentPointX,currentPointY+2) && !this.isVisitedWithIndex(currentPointX,currentPointY+2)){
-      neighbors.push([currentPointX,currentPointY+2]);
+    if (this.isIndexInRange(currentPointX, currentPointY + 2) && !this.isVisitedWithIndex(currentPointX, currentPointY + 2)) {
+      neighbors.push([currentPointX, currentPointY + 2]);
     }
     return neighbors;
   }

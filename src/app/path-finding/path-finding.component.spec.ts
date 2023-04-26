@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { PathFindingComponent } from './path-finding.component';
+import {PathFindingComponent} from './path-finding.component';
 
 describe('PathFindingComponent', () => {
   let component: PathFindingComponent;

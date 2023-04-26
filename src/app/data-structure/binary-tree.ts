@@ -3,7 +3,9 @@ export class BinaryTree {
     public value: number,
     public left?: BinaryTree,
     public right?: BinaryTree,
-  ) {}
+  ) {
+  }
+
   // 二叉搜索树的插入
   insert(value: number): BinaryTree {
     if (value < this.value) {
@@ -21,6 +23,7 @@ export class BinaryTree {
     }
     return this;
   }
+
   // 二叉搜索树的查找
   find(value: number): BinaryTree | null {
     if (value < this.value) {
@@ -39,6 +42,7 @@ export class BinaryTree {
       return this;
     }
   }
+
   // 二叉搜索树的删除
   delete(value: number): BinaryTree | null {
     if (value < this.value) {
@@ -69,6 +73,7 @@ export class BinaryTree {
     }
     return this;
   }
+
   getMinValue(): number {
     if (this.left) {
       return this.left.getMinValue();
@@ -76,6 +81,7 @@ export class BinaryTree {
       return this.value;
     }
   }
+
   // 二叉搜索树的遍历
   traverseInOrder(): number[] {
     const traverse: number[] = [];
@@ -88,6 +94,7 @@ export class BinaryTree {
     }
     return traverse;
   }
+
   traversePreOrder(): number[] {
     const traverse: number[] = [];
     traverse.push(this.value);
@@ -99,6 +106,7 @@ export class BinaryTree {
     }
     return traverse;
   }
+
   traversePostOrder(): number[] {
     const traverse: number[] = [];
     if (this.left) {
@@ -110,6 +118,7 @@ export class BinaryTree {
     traverse.push(this.value);
     return traverse;
   }
+
   // 二叉搜索树的层序遍历
   traverseLevelOrder(): number[] {
     const traverse: number[] = [];
@@ -127,6 +136,7 @@ export class BinaryTree {
     }
     return traverse;
   }
+
   // 二叉搜索树的最大深度
   getDepth(): number {
     if (!this.left && !this.right) {

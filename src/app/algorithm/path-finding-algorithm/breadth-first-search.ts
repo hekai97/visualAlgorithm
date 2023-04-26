@@ -1,19 +1,20 @@
 import {BaseAlgorithm, Color} from "./base-algorithm";
 
-export class BreadthFirstSearch extends BaseAlgorithm{
+export class BreadthFirstSearch extends BaseAlgorithm {
   start(): void {
     //创建一个div的队列
     const queue: HTMLElement[] = [];
     //将起点加入队列
     queue.push(this.getIndexNode(this.startRow, this.startCol)!);
     let time = 0;
-    this.startAlgorithm(queue,time);
-  }
-  constructor(rows:number,cols:number,startRow: number, startCol: number, endRow: number, endCol: number,speed:number) {
-    super(rows,cols,startRow, startCol, endRow, endCol,speed);
+    this.startAlgorithm(queue, time);
   }
 
-  private startAlgorithm(queue: HTMLElement[],time:number) {
+  constructor(rows: number, cols: number, startRow: number, startCol: number, endRow: number, endCol: number, speed: number) {
+    super(rows, cols, startRow, startCol, endRow, endCol, speed);
+  }
+
+  private startAlgorithm(queue: HTMLElement[], time: number) {
     let found = false;
     //开始广搜
     while (queue.length > 0) {
@@ -28,14 +29,14 @@ export class BreadthFirstSearch extends BaseAlgorithm{
       //如果队首元素不是终点，将其加入已访问集合
       // current.setAttribute('visited', 'true');
       let index = this.getNodeIndex(current);
-      this.setVisitedWithIndex(index[0],index[1],true);
+      this.setVisitedWithIndex(index[0], index[1], true);
       // 更改cost
       let parent = this.getParentNodeWithNode(current);
-      if(parent != null) {
+      if (parent != null) {
         // current.setAttribute('cost',`${parseInt(parent.getAttribute('cost')!)+1}`);
 
         // this.setNodeCostWithIndex(index[0],index[1],this.getNodeCostWithNode(parent)+1);
-        this.setNodeCostWithNode(current,this.getNodeCostWithNode(parent)+1);
+        this.setNodeCostWithNode(current, this.getNodeCostWithNode(parent) + 1);
       }
       // let parentIndex = current.getAttribute('parent');
       // console.log(parentIndex);
@@ -44,11 +45,11 @@ export class BreadthFirstSearch extends BaseAlgorithm{
       //   current.setAttribute('cost',`${parseInt(parent.getAttribute('cost')!)+1}`);
       // }
       // 延迟染色
-      if(!(this.isStartNode(current)||this.isEndNode(current))){
+      if (!(this.isStartNode(current) || this.isEndNode(current))) {
         // this.changeColor(current,this.speed,time);
 
         // this.changeDivColorWithNodeDelay(current,Color.RED, this.speed);
-        this.addChangeColorQueue(index[0],index[1],Color.RED);
+        this.addChangeColorQueue(index[0], index[1], Color.RED);
       }
       // else{
       //   this.changeColor(current,this.speed,time);
@@ -57,15 +58,13 @@ export class BreadthFirstSearch extends BaseAlgorithm{
       // }
 
 
-
-
       // setTimeout(() => {
       //   this.changeColor(current,this.speed);
       // }, this.speed);
       //将队首元素的相邻元素加入队列
       const neighbors = this.getNeighbors(current);
       for (const neighbor of neighbors) {
-        if (!this.isVisitedWithNode(neighbor)&&!this.isWallWithNode(neighbor)) {
+        if (!this.isVisitedWithNode(neighbor) && !this.isWallWithNode(neighbor)) {
           console.log(neighbor.getAttribute('wall'));
           neighbor.setAttribute('visited', 'true');
           neighbor.setAttribute('parent', `${current.getAttribute('row')}|${current.getAttribute('col')}`);
@@ -73,7 +72,7 @@ export class BreadthFirstSearch extends BaseAlgorithm{
         }
       }
     }
-    if(found) {
+    if (found) {
       // this.findBestPath(time);
       return;
       // this.drawBestPath();

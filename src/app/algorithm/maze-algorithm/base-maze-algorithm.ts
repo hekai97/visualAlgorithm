@@ -5,6 +5,7 @@ interface WallQueue {
   col: number,
   type: string
 }
+
 export abstract class BaseMazeAlgorithm extends BaseAlgorithm {
   walls: boolean[][];
   wallQueue: WallQueue[] = [];
@@ -31,14 +32,14 @@ export abstract class BaseMazeAlgorithm extends BaseAlgorithm {
     if (this.wallQueue.length > 0) {
       let wall = this.wallQueue.shift();
       if (wall) {
-        this.setWallWithIndex(wall.row, wall.col,true);
+        this.setWallWithIndex(wall.row, wall.col, true);
       }
-    }else{
+    } else {
       this.isEnd = true;
     }
     this.timer = setTimeout(() => {
       this.playSetWallAnimation();
-    },this.getCalculateSpeed());
+    }, this.getCalculateSpeed());
   }
 
   protected addTOWallQueue(row: number, col: number) {
@@ -46,10 +47,10 @@ export abstract class BaseMazeAlgorithm extends BaseAlgorithm {
   }
 
   private setWallQueue() {
-    for(let i=0;i<this.rows;i++){
-      for(let j=0;j<this.cols;j++){
-        if(this.walls[i][j]){
-          this.addTOWallQueue(i,j);
+    for (let i = 0; i < this.rows; i++) {
+      for (let j = 0; j < this.cols; j++) {
+        if (this.walls[i][j]) {
+          this.addTOWallQueue(i, j);
         }
       }
     }

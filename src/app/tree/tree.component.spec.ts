@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { TreeComponent } from './tree.component';
+import {TreeComponent} from './tree.component';
 
 describe('TreeComponent', () => {
   let component: TreeComponent;
@@ -8,9 +8,9 @@ describe('TreeComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ TreeComponent ]
+      declarations: [TreeComponent]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(TreeComponent);
     component = fixture.componentInstance;
