@@ -13,6 +13,7 @@ import {CountingSort} from "../algorithm/sort-algorithm/counting-sort";
 import {BucketSort} from "../algorithm/sort-algorithm/bucket-sort";
 
 
+
 @Component({
   selector: 'app-sorting',
   templateUrl: './sorting.component.html',
