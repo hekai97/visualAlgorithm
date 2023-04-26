@@ -110,8 +110,8 @@ export class SortingComponent implements OnInit {
   sortAlgorithm: SortAlgorithm | null = null;
   sortArray: number[] = [];
   sortArrayString: string = '';
-  inputControl = new FormControl('',[
-     Validators.required,
+  inputControl = new FormControl('', [
+    Validators.required,
     this.validInputFormatFunction,
     this.validInputNumberFunction
   ]);
@@ -126,10 +126,10 @@ export class SortingComponent implements OnInit {
    * @param control
    */
   validInputFormatFunction(control: FormControl): { [key: string]: any } | null {
-    if(/^((\d+)(,)?)*$/.test(control.value)){
+    if (/^((\d+)(,)?)*$/.test(control.value)) {
       return null;
-    }else{
-      return {formatError:true};
+    } else {
+      return {formatError: true};
     }
   }
 
@@ -141,13 +141,14 @@ export class SortingComponent implements OnInit {
     let max = 50;
     let min = 0;
     let array = control.value.split(',');
-    for(let i = 0;i < array.length;i++){
-      if(array[i] > max || array[i] < min){
-        return {overMaxNumber:true};
+    for (let i = 0; i < array.length; i++) {
+      if (array[i] > max || array[i] < min) {
+        return {overMaxNumber: true};
       }
     }
     return null;
   }
+
   /**
    * 该数据是用来判断用户的输入是否超过了最大值，如果超过最大值的话，该值为true，并且在前端界面会显示错误信息。
    */
@@ -170,16 +171,16 @@ export class SortingComponent implements OnInit {
     // 将输入的obj转成字符串
     console.log(this.sortArrayString);
     // console.log(this.sortArrayString);
-    if(this.inputControl.hasError('formatError')){
+    if (this.inputControl.hasError('formatError')) {
       return;
     }
-    if(this.inputControl.hasError('overMaxNumber')){
+    if (this.inputControl.hasError('overMaxNumber')) {
       return;
     }
     let array = this.sortArrayString.split(',');
     let copyArray = [];
     for (let i = 0; i < array.length; i++) {
-      if(array[i] != ""){
+      if (array[i] != "") {
         copyArray.push(parseInt(array[i]));
       }
     }
@@ -268,19 +269,19 @@ export class SortingComponent implements OnInit {
     console.log(index);
     switch (index) {
       case 0:
-        this.sortAlgorithm = new BubbleSort(this.sortArray, this.speed,this.animationBuilder);
+        this.sortAlgorithm = new BubbleSort(this.sortArray, this.speed, this.animationBuilder);
         break;
       case 1:
-        this.sortAlgorithm = new SelectionSort(this.sortArray, this.speed,this.animationBuilder);
+        this.sortAlgorithm = new SelectionSort(this.sortArray, this.speed, this.animationBuilder);
         break;
       case 2:
-        this.sortAlgorithm = new InsertionSort(this.sortArray, this.speed,this.animationBuilder);
+        this.sortAlgorithm = new InsertionSort(this.sortArray, this.speed, this.animationBuilder);
         break;
       case 3:
-        this.sortAlgorithm = new QuickSort(this.sortArray, this.speed,this.animationBuilder);
+        this.sortAlgorithm = new QuickSort(this.sortArray, this.speed, this.animationBuilder);
         break;
       case 4:
-        this.sortAlgorithm = new HeapSort(this.sortArray, this.speed,this.animationBuilder);
+        this.sortAlgorithm = new HeapSort(this.sortArray, this.speed, this.animationBuilder);
         break;
       // case 5:
       //   this.sortAlgorithm = new MergeSort(this.sortArray, this.speed,this.animationBuilder);
@@ -299,9 +300,10 @@ export class SortingComponent implements OnInit {
     this.sortAlgorithm!.startSort();
     this.startCostTime();
   }
+
   changeSpeed() {
-    if(this.sortAlgorithm){
-      this.sortAlgorithm.speed=this.speed;
+    if (this.sortAlgorithm) {
+      this.sortAlgorithm.speed = this.speed;
     }
   }
 
@@ -324,11 +326,12 @@ export class SortingComponent implements OnInit {
         this.costMinute++;
         this.costSecond = 0;
       }
-      if(this.sortAlgorithm&&this.sortAlgorithm.isEnd||this.sortAlgorithm==null){
+      if (this.sortAlgorithm && this.sortAlgorithm.isEnd || this.sortAlgorithm == null) {
         this.stopCostTime();
       }
     }, 10);
   }
+
   stopCostTime() {
     clearInterval(this.timerInterval);
   }
@@ -340,12 +343,13 @@ export class SortingComponent implements OnInit {
   }
 
   stop() {
-    if(this.sortAlgorithm){
+    if (this.sortAlgorithm) {
       this.sortAlgorithm.stopSort();
       this.sortAlgorithm.removeBackGroundColor();
     }
     this.sortAlgorithm = null;
   }
+
   TabChanged(index: number) {
     this.stop();
   }

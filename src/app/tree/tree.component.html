@@ -1,0 +1,63 @@
+<div class="tree-main">
+  <mat-tab-group (selectedIndexChange)="tabSelectionChanged($event)">
+    <mat-tab label="{{treeTabs[0].tab}}">
+      <div style="display: flex;flex-direction: row;height: 200px">
+        <div class="input-with-button">
+          <button mat-raised-button color="primary" routerLink="/">返回首页</button>
+          <button mat-raised-button color="primary" (click)="generateBinarySearchTree()">生成二叉搜索树</button>
+          <button mat-raised-button color="primary" (click)="deleteBinarySearchTree()">销毁二叉搜索树</button>
+        </div>
+
+        <div class="input-with-button">
+          <mat-form-field>
+            <mat-label>插入节点</mat-label>
+            <input matInput type="number" placeholder="输入一个数字" [(ngModel)]="binarySearchTreeNodeValue">
+          </mat-form-field>
+          <button mat-raised-button color="primary" (click)="addBinarySearchTreeNode()">添加节点</button>
+        </div>
+
+        <div class="input-with-button">
+          <mat-form-field>
+            <mat-label>删除节点</mat-label>
+            <input matInput type="number" placeholder="输入节点数字" [(ngModel)]="waitDeleteBinarySearchTreeNodeValue">
+          </mat-form-field>
+          <button mat-raised-button color="primary" (click)="deleteBinarySearchTreeNode()">删除节点</button>
+        </div>
+
+        <div class="input-with-button">
+          <mat-form-field>
+            <mat-label>搜索节点</mat-label>
+            <input matInput type="number" placeholder="输入节点数字" [(ngModel)]="waitSearchBinarySearchTreeNodeValue">
+          </mat-form-field>
+          <button mat-raised-button color="primary" (click)="searchBinarySearchTreeNode()">搜索节点</button>
+        </div>
+        <div class="input-with-button">
+          <button mat-raised-button color="primary" (click)="preOrderTraversal()"
+                  [disabled]="this.traverseTimer!=undefined">先序遍历
+          </button>
+          <button mat-raised-button color="primary" (click)="inOrderTraversal()"
+                  [disabled]="this.traverseTimer!=undefined">中序遍历
+          </button>
+          <button mat-raised-button color="primary" (click)="postOrderTraversal()"
+                  [disabled]="this.traverseTimer!=undefined">后序遍历
+          </button>
+          <button mat-raised-button color="primary" (click)="levelOrderTraversal()"
+                  [disabled]="this.traverseTimer!=undefined">层次遍历
+          </button>
+        </div>
+        <div class="speed-area">
+          <div style="margin-left: 20px">速度：</div>
+          <mat-slider style="width: 200px" min="1" max="100" step="1"
+                      discrete>
+            <input matSliderThumb [(value)]="speed">
+          </mat-slider>
+        </div>
+      </div>
+    </mat-tab>
+    <mat-tab label="{{treeTabs[1].tab}}">
+
+    </mat-tab>
+  </mat-tab-group>
+  <div class="output-area">{{outputString}}</div>
+  <div id="container" style="border: 1px black solid;border-radius: 10px"></div>
+</div>

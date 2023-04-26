@@ -5,19 +5,21 @@
     <!--  <mat-tab label="Third"> Content 3 </mat-tab>-->
     <mat-tab *ngFor="let tab of algorithm;let algorithmIndex=index" label="{{tab.label}}">
       <div class="content">
+        <button mat-raised-button color="primary" routerLink="/">返回首页</button>
         <button mat-raised-button color="primary" (click)="randomArray()"
                 [disabled]="!(this.sortAlgorithm==null || this.sortAlgorithm.isEnd)">生成数据
         </button>
         <mat-form-field class="input-area">
           <mat-label>数组</mat-label>
-          <input matInput type="text" [formControl]="inputControl" [(ngModel)]="sortArrayString" (ngModelChange)="changeArray()"
+          <input matInput type="text" [formControl]="inputControl" [(ngModel)]="sortArrayString"
+                 (ngModelChange)="changeArray()"
                  [readonly]="!(this.sortAlgorithm==null || this.sortAlgorithm.isEnd)">
           <mat-error *ngIf="inputControl.hasError('overMaxNumber')">输入数字不能超过{{maxNumber}}</mat-error>
           <mat-error *ngIf="inputControl.hasError('formatError')">输入格式为[数字,数字,数字]</mat-error>
         </mat-form-field>
         速度：
         <mat-slider class="slider-length" min="{{minSpeed}}" max="{{maxSpeed}}" step="{{maxSpeed/100}}"
-                    discrete >
+                    discrete>
           <input matSliderThumb [(value)]="speed" (valueChange)="changeSpeed()">
         </mat-slider>
         <button mat-icon-button color="primary" (click)="startSort(algorithmIndex)"
@@ -37,7 +39,7 @@
       <div class="sort-card">
         <div class="sort-title">
           <div class="sort-name">{{tab.name}}</div>
-          <div class="sort-time">时间：{{costMinute}}m:{{costSecond}}s:{{costMillisecond*10}}ms</div>
+          <div class="sort-time">时间：{{costMinute}}m:{{costSecond}}s:{{costMillisecond * 10}}ms</div>
         </div>
         <div class="sort-area">
           <div class="sort-item {{tab.value}}" *ngFor="let item of sortArray;let i = index" [attr.id]="i">
@@ -45,11 +47,10 @@
           </div>
         </div>
         <div class="sort-footer">
-          <div class="sort-swap">交换次数：{{this.sortAlgorithm==null?0:this.sortAlgorithm.swapCount}}</div>
-          <div class="sort-compare">比较次数：{{this.sortAlgorithm==null?0:this.sortAlgorithm.compareCount}}</div>
+          <div class="sort-swap">交换次数：{{this.sortAlgorithm == null ? 0 : this.sortAlgorithm.swapCount}}</div>
+          <div class="sort-compare">比较次数：{{this.sortAlgorithm == null ? 0 : this.sortAlgorithm.compareCount}}</div>
         </div>
       </div>
     </mat-tab>
   </mat-tab-group>
-  <button mat-raised-button color="primary" routerLink="/">返回首页</button>
 </div>

@@ -1,51 +1,53 @@
 import {BaseAlgorithm, Color} from "./base-algorithm";
 
-export class DepthFirstSearch extends BaseAlgorithm{
+export class DepthFirstSearch extends BaseAlgorithm {
   direction = [[-1, 0], [0, 1], [1, 0], [0, -1]];
+
   start(): void {
     // 深度优先搜索
-    let res = this.startAlgorithm(this.startRow,this.startCol,null);
-    console.log('res>>',res);
-    if(res){
+    let res = this.startAlgorithm(this.startRow, this.startCol, null);
+    console.log('res>>', res);
+    if (res) {
       console.log('找到了');
       // drawBestPath(this.endRow,this.endCol,this.speed);
       // this.drawBestPath();
     }
   }
-  constructor(rows:number,cols:number,startRow: number, startCol: number, endRow: number, endCol: number,speed:number) {
-    super(rows,cols,startRow, startCol, endRow, endCol,speed);
-    console.log('row='+rows +'col='+cols+'startRow='+startRow+'startCol='+startCol+'endRow='+endRow+'endCol='+endCol+'speed='+speed);
+
+  constructor(rows: number, cols: number, startRow: number, startCol: number, endRow: number, endCol: number, speed: number) {
+    super(rows, cols, startRow, startCol, endRow, endCol, speed);
+    console.log('row=' + rows + 'col=' + cols + 'startRow=' + startRow + 'startCol=' + startCol + 'endRow=' + endRow + 'endCol=' + endCol + 'speed=' + speed);
   }
 
-  private startAlgorithm(startRow: number, startCol: number,parent:HTMLElement|null): boolean {
-    if(parent){
-      this.setParentWithIndex(startRow,startCol,parent);
-      this.setNodeCostWithIndex(startRow,startCol,this.getNodeCostWithNode(parent!)+1);
+  private startAlgorithm(startRow: number, startCol: number, parent: HTMLElement | null): boolean {
+    if (parent) {
+      this.setParentWithIndex(startRow, startCol, parent);
+      this.setNodeCostWithIndex(startRow, startCol, this.getNodeCostWithNode(parent!) + 1);
     }
-    if(this.isStartPoint(startRow,startCol)&&parent!==null){
+    if (this.isStartPoint(startRow, startCol) && parent !== null) {
       return false;
     }
-    if(this.isEndPoint(startRow,startCol)){
-      console.log('停止了，此时的行数为',startRow,'此时的列数为',startCol);
+    if (this.isEndPoint(startRow, startCol)) {
+      console.log('停止了，此时的行数为', startRow, '此时的列数为', startCol);
       return true;
     }
-    if(!this.isIndexInRange(startRow,startCol)){
+    if (!this.isIndexInRange(startRow, startCol)) {
       return false;
     }
     for (let i = 0; i < 4; i++) {
       let newRow = startRow + this.direction[i][0];
       let newCol = startCol + this.direction[i][1];
-      console.log('newRow='+newRow+'newCol='+newCol+'isIndexInRange='+this.isIndexInRange(newRow,newCol));
-      if (this.isIndexInRange(newRow,newCol) && !this.isWallWithIndex(newRow, newCol) && !this.isVisitedWithIndex(newRow,newCol)) {
-        this.setVisitedWithIndex(newRow,newCol,true);
+      console.log('newRow=' + newRow + 'newCol=' + newCol + 'isIndexInRange=' + this.isIndexInRange(newRow, newCol));
+      if (this.isIndexInRange(newRow, newCol) && !this.isWallWithIndex(newRow, newCol) && !this.isVisitedWithIndex(newRow, newCol)) {
+        this.setVisitedWithIndex(newRow, newCol, true);
         // this.changeColor(newRow,newCol,time);
         // time+=100/this.speed;
 
         // this.changeDivColorWithIndexDelay(newRow,newCol,Color.RED, this.speed);
-        this.addChangeColorQueue(newRow,newCol,Color.RED);
+        this.addChangeColorQueue(newRow, newCol, Color.RED);
 
-        let res = this.startAlgorithm(newRow, newCol,this.getIndexNode(startRow,startCol)!);
-        if(res){
+        let res = this.startAlgorithm(newRow, newCol, this.getIndexNode(startRow, startCol)!);
+        if (res) {
           return true;
         }
       }

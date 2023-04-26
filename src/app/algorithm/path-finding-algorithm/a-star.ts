@@ -3,6 +3,7 @@ import {PriorityQueue} from "./priority_queue";
 
 export class AStar extends BaseAlgorithm {
   private D = 1;
+
   start(): void {
     /**
      * * 初始化open_set和close_set；
@@ -22,7 +23,7 @@ export class AStar extends BaseAlgorithm {
      *                 * 将节点m加入open_set中
      *
      * */
-    // A star 算法
+      // A star 算法
     let direction = [[-1, 0], [0, 1], [1, 0], [0, -1]];
     let openSet = new PriorityQueue<HTMLElement>();
     // let closeSet = [];
@@ -44,10 +45,10 @@ export class AStar extends BaseAlgorithm {
         let newRow = parseInt(div.getAttribute('row')!) + direction[i][0];
         let newCol = parseInt(div.getAttribute('col')!) + direction[i][1];
         if (this.isIndexInRange(newRow, newCol) && !this.isWallWithIndex(newRow, newCol)) {
-          if(this.isVisitedWithIndex(newRow,newCol)){
+          if (this.isVisitedWithIndex(newRow, newCol)) {
             continue;
           }
-          if(!openSet.contains(this.getIndexNode(newRow, newCol)!)){
+          if (!openSet.contains(this.getIndexNode(newRow, newCol)!)) {
             this.setParentWithIndex(newRow, newCol, div);
             this.setNodeCostWithIndex(newRow, newCol, this.getNodeCostWithNode(div) + 1);
             openSet.insert(this.f(newRow, newCol), this.getIndexNode(newRow, newCol)!);
@@ -74,9 +75,11 @@ export class AStar extends BaseAlgorithm {
       // }
     }
   }
-  constructor(rows:number,cols:number,startRow: number, startCol: number, endRow: number, endCol: number,speed:number) {
-    super(rows,cols,startRow, startCol, endRow, endCol,speed);
+
+  constructor(rows: number, cols: number, startRow: number, startCol: number, endRow: number, endCol: number, speed: number) {
+    super(rows, cols, startRow, startCol, endRow, endCol, speed);
   }
+
   // A star算法中的g(n)函数
   private g(row: number, col: number): number {
     let dx = Math.abs(row - this.startRow);
@@ -84,6 +87,7 @@ export class AStar extends BaseAlgorithm {
     return (dx + dy) * this.D;
     // return Math.sqrt(Math.pow(row - this.startRow, 2) + Math.pow(col - this.startCol, 2))+this.getNodeCostWithIndex(row,col);
   }
+
   // A star算法中的h(n)函数
   private h(row: number, col: number): number {
     let dx = Math.abs(row - this.endRow);
@@ -91,6 +95,7 @@ export class AStar extends BaseAlgorithm {
     return (dx + dy) * this.D;
     // return Math.sqrt(Math.pow(row - this.endRow, 2) + Math.pow(col - this.endCol, 2))+this.getNodeCostWithIndex(row,col);
   }
+
   // A star算法中的f(n)函数
   private f(row: number, col: number): number {
     return this.g(row, col) + this.h(row, col);

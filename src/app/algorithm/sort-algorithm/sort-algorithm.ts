@@ -172,8 +172,8 @@ export abstract class SortAlgorithm {
     if (i === j) {
       return;
     }
-    this.setBackGroundColor(i,SortColor.YELLOW);
-    this.setBackGroundColor(j,SortColor.YELLOW);
+    this.setBackGroundColor(i, SortColor.YELLOW);
+    this.setBackGroundColor(j, SortColor.YELLOW);
     let right = Math.max(i, j);
     let left = Math.min(i, j);
     let length = right - left;

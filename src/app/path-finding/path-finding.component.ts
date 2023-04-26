@@ -9,11 +9,12 @@ import {RandomizedDepthFirstSearch} from "../algorithm/maze-algorithm/randomized
 import {SimpleStairMaze} from "../algorithm/maze-algorithm/simple-stair-maze";
 import {RecursiveDivision} from "../algorithm/maze-algorithm/recursive-division";
 import {BaseMazeAlgorithm} from "../algorithm/maze-algorithm/base-maze-algorithm";
+
 @Component({
   templateUrl: './path-finding.component.html',
   styleUrls: ['./path-finding.component.css'],
 })
-export class PathFindingComponent implements OnInit,DoCheck {
+export class PathFindingComponent implements OnInit, DoCheck {
   constructor(private _snackBar: MatSnackBar) {
   }
 
@@ -27,7 +28,8 @@ export class PathFindingComponent implements OnInit,DoCheck {
     this.createStartNode(this.startRow, this.startCol);
     this.createEndNode(this.endRow, this.endCol);
   }
-  pathFindingAlgorithm: BaseAlgorithm | null= null;
+
+  pathFindingAlgorithm: BaseAlgorithm | null = null;
   mazeAlgorithm: BaseMazeAlgorithm | null = null;
   // 默认地图大小
   rows = 20;
@@ -39,7 +41,7 @@ export class PathFindingComponent implements OnInit,DoCheck {
   speed = 100;
   isMouseDown = false;
 
-  isWeighted :boolean = false;
+  isWeighted: boolean = false;
 
   isRunning = false;
   pathFindingAlgorithms = [
@@ -53,8 +55,8 @@ export class PathFindingComponent implements OnInit,DoCheck {
     {name: 'Simple Stair Maze', value: 'simpleStairMaze'},
     {name: 'Randomized depth-first search', value: 'randomizedDepthFirstSearch'},
     {name: 'Recursive Division', value: 'recursiveDivision'},
-    {name: 'Randomized Prim', value: 'randomizedPrim'},
-    {name: 'Randomized Kruskal', value: 'randomizedKruskal'},
+    // {name: 'Randomized Prim', value: 'randomizedPrim'},
+    // {name: 'Randomized Kruskal', value: 'randomizedKruskal'},
   ];
 
   selectedPathFindingAlgorithm = 'aStar';
@@ -68,13 +70,13 @@ export class PathFindingComponent implements OnInit,DoCheck {
     this.createEndNode(this.endRow, this.endCol);
     switch (this.selectedMazeAlgorithm) {
       case 'randomizedDepthFirstSearch':
-        this.mazeAlgorithm = new RandomizedDepthFirstSearch(this.rows, this.cols,this.startRow-1,this.startCol-1,this.endRow-1,this.endCol-1,this.speed);
+        this.mazeAlgorithm = new RandomizedDepthFirstSearch(this.rows, this.cols, this.startRow - 1, this.startCol - 1, this.endRow - 1, this.endCol - 1, this.speed);
         break;
       case 'simpleStairMaze':
-        this.mazeAlgorithm = new SimpleStairMaze(this.rows, this.cols,this.startRow-1,this.startCol-1,this.endRow-1,this.endCol-1,this.speed);
+        this.mazeAlgorithm = new SimpleStairMaze(this.rows, this.cols, this.startRow - 1, this.startCol - 1, this.endRow - 1, this.endCol - 1, this.speed);
         break;
       case 'recursiveDivision':
-        this.mazeAlgorithm = new RecursiveDivision(this.rows, this.cols,this.startRow-1,this.startCol-1,this.endRow-1,this.endCol-1,this.speed);
+        this.mazeAlgorithm = new RecursiveDivision(this.rows, this.cols, this.startRow - 1, this.startCol - 1, this.endRow - 1, this.endCol - 1, this.speed);
         break;
       default:
         break;
@@ -137,8 +139,8 @@ export class PathFindingComponent implements OnInit,DoCheck {
         const row = event.target.getAttribute('row');
         const col = event.target.getAttribute('col');
         if (
-          (row == this.startRow-1 && col == this.startCol-1) ||
-          (this.endRow-1 == row && this.endCol-1 == col)
+          (row == this.startRow - 1 && col == this.startCol - 1) ||
+          (this.endRow - 1 == row && this.endCol - 1 == col)
         ) {
           this._snackBar.open('不能选择起点或终点！');
         } else {
@@ -183,7 +185,7 @@ export class PathFindingComponent implements OnInit,DoCheck {
 
   createStartNode(x: number, y: number) {
     const container = document.querySelector('.container');
-    const startNode = container!.querySelector(`div[row="${x-1}"][col="${y-1}"]`);
+    const startNode = container!.querySelector(`div[row="${x - 1}"][col="${y - 1}"]`);
     startNode!.setAttribute('cost', String(0));
     startNode!.setAttribute('class', 'ends');
     startNode!.innerHTML = 'S';
@@ -191,56 +193,54 @@ export class PathFindingComponent implements OnInit,DoCheck {
 
   createEndNode(x: number, y: number) {
     const container = document.querySelector('.container');
-    const endNode = container!.querySelector(`div[row="${x-1}"][col="${y-1}"]`);
+    const endNode = container!.querySelector(`div[row="${x - 1}"][col="${y - 1}"]`);
     endNode!.setAttribute('class', 'ends');
     endNode!.innerHTML = 'E';
   }
 
-  visualStart():void {
+  visualStart(): void {
     this.clearBoardColor();
-    if(this.selectedPathFindingAlgorithm == 'aStar'){
-      this.pathFindingAlgorithm = new AStar(this.rows, this.cols, this.startRow-1, this.startCol-1, this.endRow-1, this.endCol-1, this.speed);
-    }
-    else if(this.selectedPathFindingAlgorithm == 'dijkstra'){
-      if(this.isWeighted){
-        this.pathFindingAlgorithm = new Dijkstra(this.rows, this.cols, this.startRow-1, this.startCol-1, this.endRow-1, this.endCol-1, this.speed);
+    if (this.selectedPathFindingAlgorithm == 'aStar') {
+      this.pathFindingAlgorithm = new AStar(this.rows, this.cols, this.startRow - 1, this.startCol - 1, this.endRow - 1, this.endCol - 1, this.speed);
+    } else if (this.selectedPathFindingAlgorithm == 'dijkstra') {
+      if (this.isWeighted) {
+        this.pathFindingAlgorithm = new Dijkstra(this.rows, this.cols, this.startRow - 1, this.startCol - 1, this.endRow - 1, this.endCol - 1, this.speed);
+      } else {
+        this.pathFindingAlgorithm = new BreadthFirstSearch(this.rows, this.cols, this.startRow - 1, this.startCol - 1, this.endRow - 1, this.endCol - 1, this.speed)
       }
-      else{
-        this.pathFindingAlgorithm = new BreadthFirstSearch(this.rows, this.cols, this.startRow-1, this.startCol-1, this.endRow-1, this.endCol-1, this.speed)
-      }
-    }else if(this.selectedPathFindingAlgorithm == 'bfs'){
-      this.pathFindingAlgorithm = new BreadthFirstSearch(this.rows, this.cols, this.startRow-1, this.startCol-1, this.endRow-1, this.endCol-1, this.speed);
-    }
-    else if(this.selectedPathFindingAlgorithm == 'dfs'){
+    } else if (this.selectedPathFindingAlgorithm == 'bfs') {
+      this.pathFindingAlgorithm = new BreadthFirstSearch(this.rows, this.cols, this.startRow - 1, this.startCol - 1, this.endRow - 1, this.endCol - 1, this.speed);
+    } else if (this.selectedPathFindingAlgorithm == 'dfs') {
       console.log('dfs');
-      this.pathFindingAlgorithm = new DepthFirstSearch(this.rows, this.cols, this.startRow-1, this.startCol-1, this.endRow-1, this.endCol-1, this.speed);
+      this.pathFindingAlgorithm = new DepthFirstSearch(this.rows, this.cols, this.startRow - 1, this.startCol - 1, this.endRow - 1, this.endCol - 1, this.speed);
     }
     this.pathFindingAlgorithm!.startVisual();
   }
+
   // 用于给图设置权值
   changeNodeWeight() {
     console.log(this.isWeighted);
-    if(this.isWeighted){
-      for(let i=0;i<this.rows;i++){
-        for(let j=0;j<this.cols;j++){
-          let widget = Math.ceil(Math.random()*10);
-          if((i==this.startRow-1&&j==this.startCol-1)||(i==this.endRow-1&&j==this.endCol-1)){
+    if (this.isWeighted) {
+      for (let i = 0; i < this.rows; i++) {
+        for (let j = 0; j < this.cols; j++) {
+          let widget = Math.ceil(Math.random() * 10);
+          if ((i == this.startRow - 1 && j == this.startCol - 1) || (i == this.endRow - 1 && j == this.endCol - 1)) {
             widget = 0;
           }
           let temp = document.querySelector(`div[row="${i}"][col="${j}"]`);
           temp!.setAttribute('weight', widget.toString());
-          if((i==this.startRow-1&&j==this.startCol-1)||(i==this.endRow-1&&j==this.endCol-1)){
+          if ((i == this.startRow - 1 && j == this.startCol - 1) || (i == this.endRow - 1 && j == this.endCol - 1)) {
 
-          }else {
+          } else {
             temp!.innerHTML = widget.toString();
           }
         }
       }
-    }else{
-      for(let i=0;i<this.rows;i++){
-        for(let j=0;j<this.cols;j++){
+    } else {
+      for (let i = 0; i < this.rows; i++) {
+        for (let j = 0; j < this.cols; j++) {
           let temp = document.querySelector(`div[row="${i}"][col="${j}"]`);
-          if(!(i==this.startRow-1&&j==this.startCol-1)&&!(i==this.endRow-1&&j==this.endCol-1)) {
+          if (!(i == this.startRow - 1 && j == this.startCol - 1) && !(i == this.endRow - 1 && j == this.endCol - 1)) {
             temp!.removeAttribute('weight');
             temp!.innerHTML = '';
           }
@@ -250,10 +250,10 @@ export class PathFindingComponent implements OnInit,DoCheck {
   }
 
   changeSpeedDynamically() {
-    if(this.pathFindingAlgorithm!=null){
+    if (this.pathFindingAlgorithm != null) {
       this.pathFindingAlgorithm!.speed = this.speed;
     }
-    if(this.mazeAlgorithm!=null){
+    if (this.mazeAlgorithm != null) {
       this.mazeAlgorithm!.speed = this.speed;
     }
   }
@@ -266,14 +266,14 @@ export class PathFindingComponent implements OnInit,DoCheck {
   }
 
   clearPathFindingAlgorithm() {
-    if(this.pathFindingAlgorithm){
+    if (this.pathFindingAlgorithm) {
       this.pathFindingAlgorithm!.stopVisual();
       this.pathFindingAlgorithm = null;
     }
   }
 
   clearMazeAlgorithm() {
-    if(this.mazeAlgorithm){
+    if (this.mazeAlgorithm) {
       this.mazeAlgorithm!.stopVisual();
       this.mazeAlgorithm = null;
     }
@@ -284,15 +284,15 @@ export class PathFindingComponent implements OnInit,DoCheck {
     const container = document.querySelector('.container');
     const nodes = container!.querySelectorAll('div');
     for (let i = 0; i < nodes.length; i++) {
-      if(!this.isStartOrEndNode(nodes[i])&&!nodes[i].classList.contains('wall')){
+      if (!this.isStartOrEndNode(nodes[i]) && !nodes[i].classList.contains('wall')) {
         nodes[i].setAttribute('class', 'before_start_node');
-        if(!this.isWeighted){
+        if (!this.isWeighted) {
           nodes[i].innerHTML = '';
         }
       }
       nodes[i].setAttribute('parent', 'null');
       nodes[i].removeAttribute('visited');
-      if(!this.isStartOrEndNode(nodes[i])) {
+      if (!this.isStartOrEndNode(nodes[i])) {
         nodes[i].removeAttribute('cost');
       }
     }
@@ -302,29 +302,29 @@ export class PathFindingComponent implements OnInit,DoCheck {
     const container = document.querySelector('.container');
     const nodes = container!.querySelectorAll('div');
     for (let i = 0; i < nodes.length; i++) {
-      if(nodes[i].classList.contains('wall')){
+      if (nodes[i].classList.contains('wall')) {
         nodes[i].setAttribute('class', 'before_start_node');
         nodes[i].setAttribute('wall', 'false');
         nodes[i].innerHTML = '';
-        if(nodes[i].getAttribute('weight')!=null){
+        if (nodes[i].getAttribute('weight') != null) {
           nodes[i].innerHTML = nodes[i].getAttribute('weight')!;
         }
       }
     }
   }
 
-  isStartOrEndNode(div:HTMLElement) {
+  isStartOrEndNode(div: HTMLElement) {
     return div.classList.contains('ends');
 
   }
 
   private clearWeight() {
-    if(this.selectedPathFindingAlgorithm!='dijkstra'){
+    if (this.selectedPathFindingAlgorithm != 'dijkstra') {
       this.isWeighted = false;
       const container = document.querySelector('.container');
       const nodes = container!.querySelectorAll('div');
       for (let i = 0; i < nodes.length; i++) {
-        if(!this.isStartOrEndNode(nodes[i])){
+        if (!this.isStartOrEndNode(nodes[i])) {
           nodes[i].removeAttribute('weight');
           nodes[i].innerHTML = '';
         }
