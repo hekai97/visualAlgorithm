@@ -63,6 +63,7 @@ export class PathFindingComponent implements OnInit, DoCheck {
   selectedMazeAlgorithm = 'none';
 
   generateMaze(): void {
+    this.resetTime();
     this.clearMazeAlgorithm();
     this.clearWall();
     this.clearBoardColor();
@@ -85,8 +86,10 @@ export class PathFindingComponent implements OnInit, DoCheck {
   }
 
   createBoard(): void {
+    // 网格的宽高
     const width = 1200;
     const height = 600;
+
     const container = document.querySelector('.container');
 
 
@@ -181,6 +184,7 @@ export class PathFindingComponent implements OnInit, DoCheck {
     this.createEndNode(this.endRow, this.endCol);
     this.clearPathFindingAlgorithm();
     this.clearMazeAlgorithm();
+    this.resetTime();
   }
 
   createStartNode(x: number, y: number) {
@@ -215,6 +219,7 @@ export class PathFindingComponent implements OnInit, DoCheck {
       this.pathFindingAlgorithm = new DepthFirstSearch(this.rows, this.cols, this.startRow - 1, this.startCol - 1, this.endRow - 1, this.endCol - 1, this.speed);
     }
     this.pathFindingAlgorithm!.startVisual();
+    this.startCostTime();
   }
 
   // 用于给图设置权值
@@ -263,6 +268,7 @@ export class PathFindingComponent implements OnInit, DoCheck {
     this.clearPathFindingAlgorithm();
     // this.clearMazeAlgorithm();
     this.clearBoardColor();
+    this.resetTime();
   }
 
   clearPathFindingAlgorithm() {
@@ -330,5 +336,37 @@ export class PathFindingComponent implements OnInit, DoCheck {
         }
       }
     }
+  }
+
+  costMinute: number=0;
+  costSecond: number=0;
+  costMillisecond: number=0;
+  timerInterval: number|undefined;
+  startCostTime() {
+    this.resetTime();
+    this.timerInterval = setInterval(() => {
+      this.costMillisecond++;
+      if (this.costMillisecond >= 100) {
+        this.costSecond++;
+        this.costMillisecond = 0;
+      }
+      if (this.costSecond >= 60) {
+        this.costMinute++;
+        this.costSecond = 0;
+      }
+      if (this.pathFindingAlgorithm && this.pathFindingAlgorithm.isEnd || this.pathFindingAlgorithm == null) {
+        this.stopCostTime();
+      }
+    }, 10);
+  }
+
+  stopCostTime() {
+    clearInterval(this.timerInterval);
+  }
+
+  resetTime() {
+    this.costMinute = 0;
+    this.costSecond = 0;
+    this.costMillisecond = 0;
   }
 }

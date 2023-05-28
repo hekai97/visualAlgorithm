@@ -135,7 +135,7 @@ export abstract class BaseAlgorithm {
    * @param x div属性中的row
    * @param y div属性中的col
    * @param color 染的颜色，有红色和绿色两种
-   * @private
+   * @protected
    * @return void
    */
   protected changeDivColorWithIndex(x: number, y: number, color: Color) {
@@ -446,6 +446,7 @@ export abstract class BaseAlgorithm {
     } else {
       this.isEnd = true;
     }
+    // @ts-ignore
     this.timer = setTimeout(() => {
       this.playAnimation();
     }, this.getCalculateSpeed());

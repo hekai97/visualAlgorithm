@@ -27,7 +27,6 @@ export class Dijkstra extends BaseAlgorithm {
         if (this.isIndexInRange(newRow, newCol) && !this.isWallWithIndex(newRow, newCol)) {
           let newCost = this.getNodeCostWithIndex(row, col) + this.getNodeWeightWithIndex(newRow, newCol);
           console.log('newCost', newCost, 'nodeCost', this.getNodeCostWithIndex(newRow, newCol));
-          // TODO 这里需要更改算法的设计思路，现在还是寻不准路。
           if (newCost < this.getNodeCostWithIndex(newRow, newCol) || !this.isParent(newRow, newCol)) {
             // this.setVisitedWithIndex(row, col, true);
             // this.changeDivColorWithIndexDelay(row, col, Color.RED, this.speed);

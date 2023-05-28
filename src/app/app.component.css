@@ -11,3 +11,14 @@
   font-family: 'proxima_nova_rgregular', Helvetica, Arial, sans-serif;
 
 }
+.information {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 10px 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  font-size: large;
+}

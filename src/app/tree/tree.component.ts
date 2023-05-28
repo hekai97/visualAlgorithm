@@ -30,7 +30,7 @@ export class TreeComponent implements OnInit {
   graph?: Graph;
   treeTabs = [
     {name: 'binarySearchTree', value: 'binarySearchTree', tab: '二叉搜索树'},
-    {name: 'avlTree', value: 'avlTree', tab: 'AVL树'},
+    // {name: 'avlTree', value: 'avlTree', tab: 'AVL树'},
   ]
   binarySearchTreeNodeValue?: number;
   waitDeleteBinarySearchTreeNodeValue?: number;
@@ -221,7 +221,7 @@ export class TreeComponent implements OnInit {
   // }
 
   addBinarySearchTreeNode() {
-    if (this.binarySearchTreeNodeValue) {
+    if (this.binarySearchTreeNodeValue!=null) {
       if (!this.checkValidValue()) {
         this._snackBar.open('节点值已存在', '关闭', {
           duration: 2000,
@@ -266,6 +266,9 @@ export class TreeComponent implements OnInit {
   }
 
   private checkValidValue() {
+    if(this.binarySearchTreeNodeValue!=undefined&&this.binarySearchTreeNodeValue<0){
+      return false;
+    }
     if (this.binarySearchTree) {
       return !this.binarySearchTree.find(this.binarySearchTreeNodeValue!);
     }
@@ -451,7 +454,7 @@ export class TreeComponent implements OnInit {
   }
 
   private getCalculateSpeed() {
-    return 1000 / this.speed;
+    return 1000 - 9 * this.speed;
   }
 
   private playSearchBinarySearchTreeNodeAnimation() {
@@ -569,8 +572,8 @@ export class TreeComponent implements OnInit {
       this.outputString = undefined;
       this.outputNumbers = [];
       this.preOrderTraversalHelper(this.binarySearchTreeData);
-      this.playTraverseSearchTreeNodeAnimation();
       this.outputString = '先序遍历结果：';
+      this.playTraverseSearchTreeNodeAnimation();
       // this.outputNumberToStringAndOutput();
     }
   }
@@ -598,8 +601,9 @@ export class TreeComponent implements OnInit {
       this.outputNumbers = [];
       this.inOrderTraversalHelper(this.binarySearchTreeData);
       // this.clearAnimationQueueHasSameNodeEdge();
-      this.playTraverseSearchTreeNodeAnimation();
       this.outputString = '中序遍历结果：';
+      this.playTraverseSearchTreeNodeAnimation();
+
       // this.outputNumberToStringAndOutput();
     }
   }
@@ -656,8 +660,8 @@ export class TreeComponent implements OnInit {
       this.outputString = undefined;
       this.outputNumbers = [];
       this.postOrderTraversalHelper(this.binarySearchTreeData);
-      this.playTraverseSearchTreeNodeAnimation();
       this.outputString = '后序遍历结果：';
+      this.playTraverseSearchTreeNodeAnimation();
       // this.outputNumberToStringAndOutput();
     }
   }
